@@ -39,7 +39,7 @@ abstract class FieldBase
      * https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes
      * @var type 
      */
-    protected $attributes = ['name' => '', 'type' => 'text', 'id' => '', 'class' => '', 'value' => '', 'alt' => '', 'title' => '', 'placeholder' => '', 'required' => '', 'form' => '', 'maxlength' => '', 'minlength' => '', 'max' => '', 'min' => '', 'rows' => '', 'cols' => '', 'wrap' => '', 'width' => '', 'height' => '', 'disabled' => '', 'readonly' => '', 'autofocus' => '', 'autocomplete' => '', 'selected' => '', 'multiple' => '', 'step' => '', 'size' => '',  'src' => '', 'pattern' => '', 'accept' => ''];
+    protected $attributes = ['name' => '', 'type' => 'text', 'id' => '', 'class' => '', 'value' => '', 'style' => '', 'alt' => '', 'title' => '', 'placeholder' => '', 'required' => '', 'form' => '', 'maxlength' => '', 'minlength' => '', 'max' => '', 'min' => '', 'rows' => '', 'cols' => '', 'wrap' => '', 'width' => '', 'height' => '', 'disabled' => '', 'readonly' => '', 'autofocus' => '', 'autocomplete' => '', 'selected' => '', 'multiple' => '', 'step' => '', 'size' => '',  'src' => '', 'pattern' => '', 'accept' => '',];
     
     const FIELD_TYPES_LIST = ['submit', 'tel', 'text', 'textarea', 'select', 'button', 'checkbox', 'color', 'date', 'datetime-local', 'email', 'file', 'hidden', 'image', 'month', 'number', 'password', 'radio', 'range', 'reset', 'search',  'time', 'url', 'week',];
     // Options for Label
@@ -133,14 +133,14 @@ abstract class FieldBase
                 break;
             case 'date': $ret .= $this->renderDate();
                 break;
-            case 'checkbox': 
             default: $ret .= $this->renderDefault();
                 break;
         }
         
         if($this->showBootstrap){
-            $ret = "<div class='form-group'>\n{$ret}\n</div>\n";
+            $ret = "<div class='form-group'>\n{$ret}</div>\n";
         }
+        
         return $ret;
     }
     
@@ -213,7 +213,7 @@ abstract class FieldBase
         $attr = $this->renderAttributes();
         $ret = "\t<select {$attr}>\n";
         $ret .= $this->renderOptions();
-        $ret .= "</select>\n";
+        $ret .= "\t</select>\n";
         return $ret;
     }
     
@@ -235,7 +235,9 @@ abstract class FieldBase
     
     protected function renderTextArea()
     {
-        $ret = "\t<textarea " . $this->renderAttributes() . ">{$this->getValue()}</textarea>\n";
+        $ret = "\t<textarea " . $this->renderAttributes() . ">\n";
+        $ret .= $this->getValue() ."\n";
+        $ret .= "\t</textarea>\n";
         return $ret;
     }
     
@@ -550,6 +552,17 @@ abstract class FieldBase
         return $this->attributes['wrap'];
     }
     
+    public function getStyle()
+    {
+        return $this->attributes['style'];
+    }
+    
+    public function setStyle($style)
+    {
+        $this->attributes['style'] = $style;
+        return $this;
+    }
+
     public function setName($name)
     {
         $name = str_replace(" ", "_", $name);

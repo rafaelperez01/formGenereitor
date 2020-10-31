@@ -29,8 +29,9 @@
  * porciones sustanciales del software.
  */
 require_once 'Field.php';
+require_once 'Fieldset.php';
 
-use formGenereitor\Field;
+use formGenereitor\{Field, Fieldset};
 
 
 // cuando se crea un campo, se setean automaticamente los atributos name, id, placeholder y title
@@ -55,18 +56,31 @@ echo $campo->setId(25)->setLabelFor(25);
 echo "<br>";
 
 echo "<h2>creando todos los tipos de campos </h2>";
-$fields = ['submit', 'tel', 'text', 'textarea', 'select', 'button', 'checkbox', 'color', 'date', 'datetime-local', 'email', 'file', 'hidden', 'image', 'month', 'number', 'password', 'radio', 'range', 'reset', 'search',  'time', 'url', 'week',];
+$fields = ['submit', 'tel', 'text', 'textarea', 'select', 'button', 'checkbox', 'color', 'date', 'datetime-local', 'email' => "mi correo", 'file', 'hidden', 'image', 'month', 'number', 'password', 'radio', 'range', 'reset', 'search',  'time', 'url', 'week',];
 
 
-echo "<p>Sexto</p>\n";
+echo "\n<h2>Fieldset</h2>\n";
 
-$sexo = ['h' => 'hombre', 'm' => 'mujer'];
-foreach ($sexo as $value => $label){
-    $f = new Field('sexo', $value, 'checkbox');
-    $f->setLabel($label)->setId($value)->showLabel()->setLabelClass('checkbox-inline');
-    echo $f;
+$fieldSet = new Fieldset('Datos del Titular');
+$fieldList = [];
+foreach ($fields as $field) {
+    $f = new Field($field, $field, $field);
+    $f->showBootstrap()->showLabel();
+    if('image' == $field){
+        $f->setSrc("https://cdn.pixabay.com/photo/2016/01/23/11/41/button-1157299_960_720.png");
+        $f->showBootstrap(false)->setStyle("width:50%");
+    }
+    
+    $fieldList[] = $f;
 }
 
+$class = 'col col-md-2';
+$fieldSet->setFields($fieldList)->setClass($class)->showFieldLabel()->showFieldLabel()->showFieldBootstrap();
+//$fieldSet->setFields($fieldList)->setClass('col col-md-4');
+//var_dump($fieldSet);
+echo($fieldSet->setStyle('width:300px; color: red; border: solid 2px blue; margin: 20px'));
+
+//var_dump( $fieldSet->setReadOnly(true));
 
 
 
