@@ -16,6 +16,8 @@
  * TODO: 
  * tener en cuenta al momento de subir un archivo o imagen, hacer que el formulario acepte el formato
  * 
+ * hacer el primer campo que siempre haga autofocus
+ * 
  * hacer una clase manejador de formulario, que valide, mueva, recorte las imagenes, que valide los formularios y muestres mensajes de error, que indique cuales campos serán tipo select, etc que tambien indique si el formulario tiene estilos bootstrap, que filtre/escape/limpie/valide los campos de acuerdo a tu tipo
  * 
  * usar interfaces para inyectar las dependencias, es decir, que la clase FieldSetBase tiene que recibir por parametro la interface FieldBase y que la clase FormBase tiene que recibir por parametro la interface FieldSetBase y FieldBase 

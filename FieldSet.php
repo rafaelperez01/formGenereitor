@@ -11,15 +11,18 @@
  * porciones sustanciales del software.
  */
 
+
 namespace formGenereitor;
 
 require_once 'base/FieldSetBase.php';
+require_once 'ui/FieldSetUI.php';
 
 /**
  * Description of FieldSet
  *
- * @author makina
+ * @author Rafael Pérez.
  */
-class FieldSet extends base\FieldSetBase{
+class FieldSet extends base\FieldSetBase implements ui\FieldSetUI 
+{
     //put your code here
 }

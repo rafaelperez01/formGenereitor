@@ -13,13 +13,16 @@
 
 namespace formGenereitor\base;
 
+use formGenereitor\Field;
+use formGenereitor\ui\FieldUI;
+
 /**
  * Description of FieldSetBase
  *
  * @author Rafael Pérez.
  */
-abstract class FieldSetBase {
-    
+abstract class FieldSetBase 
+{    
     protected $attributes = ['id' => '', 'class' => '', 'style' => '', 'fields' => [],];
     protected $legend = "";
     protected $readOnly = false;
@@ -48,7 +51,7 @@ abstract class FieldSetBase {
     /**
      * 
      * @param string $attrName
-     * @param type $value
+     * @param $value
      * @return $this
      */
     public function set(string $attrName, $value)
@@ -81,10 +84,10 @@ abstract class FieldSetBase {
         }
         
         foreach ($this->getFields() as $key => $field){
-            if($field instanceof \formGenereitor\ui\FieldUI){
+            if($field instanceof FieldUI){
                 $f = $field;
             } else {
-                $f = new \formGenereitor\Field($key, $field);
+                $f = new Field($key, $field);
             }
             
             $f->showLabel($this->showFieldLabel)
@@ -94,19 +97,19 @@ abstract class FieldSetBase {
             $ret .= $f->render();
         }
         
-        $ret .= "</fiendset>";
+        $ret .= "</fiendset>\n";
         
         return $ret;
     }
     
     public function addField($name, $value = "", $type = "")
     {
-        $f = new \formGenereitor\Field($name, $value, $type);
+        $f = new Field($name, $value, $type);
         $this->attributes['fields'][] = $f;
         return $this;
     }
     
-    public function addFieldObj(\formGenereitor\ui\FieldUI $field)
+    public function addFieldObj(FieldUI $field)
     {
         $this->attributes['fields'][] = $field;
         return $this;
@@ -135,12 +138,10 @@ abstract class FieldSetBase {
         return json_decode($this->toJson(), true);
     }
     
-    
     public function getAttributes()
     {
         return $this->attributes;
     }
-
 
     public function getId()
     {
@@ -183,10 +184,10 @@ abstract class FieldSetBase {
     public function setFields(array $fields)
     {
         foreach ($fields as $key => $field){
-            if($field instanceof \formGenereitor\ui\FieldUI){
+            if($field instanceof FieldUI){
                 $f = $field;
             } else {
-                $f = new \formGenereitor\Field($key, $field);
+                $f = new Field($key, $field);
             }
             
             $this->attributes['fields'][] = $f;
@@ -195,35 +196,38 @@ abstract class FieldSetBase {
         return $this;
     }
     
-    function getLegend() {
+    public function getLegend() 
+    {
         return $this->legend;
     }
 
-    function getReadOnly() {
+    public function getReadOnly() 
+    {
         return $this->readOnly;
     }
 
-    function setLegend($legend) {
+    public function setLegend($legend) 
+    {
         $this->legend = $legend;
         return $this;
     }
 
-    function setReadOnly($readOnly) {
+    public function setReadOnly($readOnly) 
+    {
         $this->readOnly = true === $readOnly;
         return $this;
     }
     
-    function showFieldLabel($show = true) 
+    public function showFieldLabel($show = true) 
     {
         $this->showFieldLabel = true === $show;
         return $this;
     }
 
-    function showFieldBootstrap($show = true) {
+    public function showFieldBootstrap($show = true) 
+    {
         $this->showFieldBootstrap = true === $show;
         return $this;
     }
     
-    
-
 }

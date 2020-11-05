@@ -14,91 +14,17 @@
     <title>formGenereitor 2.0</title>
   </head>
   <body>
-    <h1>Form Genereitor 2.0</h1>
 
-    <?php
-
-/* 
- * Copyright 2020 Rafael Pérez.
- *
- * Software protegido por la propiedad intelectual.
- * Queda prohibido copiar, modificar, fusionar, publicar, distribuir, sublicenciar y / o vender
- * copias no autorizadas del software
- *
- * El aviso de copyright anterior y este aviso de permiso se incluirán en todas las copias o 
- * porciones sustanciales del software.
- */
-require_once 'Field.php';
-require_once 'Fieldset.php';
-
-use formGenereitor\{Field, Fieldset};
-
-
-// cuando se crea un campo, se setean automaticamente los atributos name, id, placeholder y title
-$campo = new Field('nombre',3, 'textarea');
-echo $campo->setOptions(['papa', 'ajo', 'cebolla']);
-echo "<br>";
-
-// los valores de los atributos se pueden cambiar
-//echo $campo->setPlaceholder('Indique su Nombre');
-echo "<br>";
-
-// se puede indicar si se quiere mostrar la label del campo
-echo $campo->showLabel();
-echo "<br>";
-
-// se puede cambiar la label
-echo $campo->setLabel('Indique su Nombre');
-echo "<br>";
-
-// tener en cuenta que si se cambia el id del campo, tambien se deberia cambiar el for del label
-echo $campo->setId(25)->setLabelFor(25);
-echo "<br>";
-
-echo "<h2>creando todos los tipos de campos </h2>";
-$fields = ['submit', 'tel', 'text', 'textarea', 'select', 'button', 'checkbox', 'color', 'date', 'datetime-local', 'email' => "mi correo", 'file', 'hidden', 'image', 'month', 'number', 'password', 'radio', 'range', 'reset', 'search',  'time', 'url', 'week',];
-
-
-echo "\n<h2>Fieldset</h2>\n";
-
-$fieldSet = new Fieldset('Datos del Titular');
-$fieldList = [];
-foreach ($fields as $field) {
-    $f = new Field($field, $field, $field);
-    $f->showBootstrap()->showLabel();
-    if('image' == $field){
-        $f->setSrc("https://cdn.pixabay.com/photo/2016/01/23/11/41/button-1157299_960_720.png");
-        $f->showBootstrap(false)->setStyle("width:50%");
-    }
-    
-    $fieldList[] = $f;
-}
-
-$class = 'col col-md-2';
-$fieldSet->setFields($fieldList)->setClass($class)->showFieldLabel()->showFieldLabel()->showFieldBootstrap();
-//$fieldSet->setFields($fieldList)->setClass('col col-md-4');
-//var_dump($fieldSet);
-echo($fieldSet->setStyle('width:300px; color: red; border: solid 2px blue; margin: 20px'));
-
-//var_dump( $fieldSet->setReadOnly(true));
-
-
-
-
-//$f->setName('fecha')->setClass('col-sm-3')->showLabel()->showBootstrap();
-//$f->setId(9);
-//echo $f;
-
-/*
-foreach ($fields as $field){
-    $campo = new Field($field, '', $field);
-    echo $campo->showLabel()->showBootstrap()->setClass('col-sm-4')->setReadonly();
-    echo "\n";
-}
- * 
- */
-
-?>
+        <main>
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h1>Form Genereitor 2.0</h1>
+                        <?php include_once 'content.php' ?>
+                    </div>
+                </div>
+            </div>
+        </main>
     
     
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>

@@ -1,1 +1,7 @@
 nbproject/*
+.idea/workspace.xml
+.idea/vcs.xml
+.idea/php.xml
+.idea/modules.xml
+.idea/formGenereitor2.0.iml
+.idea/codeStyles/codeStyleConfig.xml
