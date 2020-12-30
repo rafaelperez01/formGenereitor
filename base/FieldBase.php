@@ -41,11 +41,12 @@ abstract class FieldBase
      * https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes
      * @var type 
      */
-    protected $attributes = ['name' => '', 'type' => 'text', 'id' => '', 'class' => '', 'value' => '', 'style' => '', 'alt' => '', 'title' => '', 'placeholder' => '', 'required' => '', 'form' => '', 'maxlength' => '', 'minlength' => '', 'max' => '', 'min' => '', 'rows' => '', 'cols' => '', 'wrap' => '', 'width' => '', 'height' => '', 'disabled' => '', 'readonly' => '', 'autofocus' => '', 'autocomplete' => '', 'selected' => '', 'multiple' => '', 'step' => '', 'size' => '',  'src' => '', 'pattern' => '', 'accept' => '',];
+    protected $attributes = ['name' => '', 'type' => 'text', 'id' => '', 'class' => '', 'value' => '', 'style' => '', 'alt' => '', 'title' => '', 'placeholder' => '', 'required' => '', 'form' => '', 'maxlength' => '', 'minlength' => '', 'max' => '', 'min' => '', 'rows' => '', 'cols' => '', 'wrap' => '', 'width' => '', 'height' => '', 'disabled' => '', 'readonly' => '', 'autofocus' => '', 'autocomplete' => '', 'selected' => '', 'checked' => '', 'multiple' => '', 'step' => '', 'size' => '',  'src' => '', 'pattern' => '', 'accept' => '',];
     
     const FIELD_TYPES_LIST = ['submit', 'tel', 'text', 'textarea', 'select', 'button', 'checkbox', 'color', 'date', 'datetime-local', 'email', 'file', 'hidden', 'image', 'month', 'number', 'password', 'radio', 'range', 'reset', 'search',  'time', 'url', 'week',];
+    
     // Options for Label
-    protected $showLabel = false;
+    protected $showLabel = true;
     protected $labelContent = "";
     protected $labelAttributes = ['id' => '', 'class' => '', 'for' => '', 'form' => '', 'accesskey' => ''];
     
@@ -58,6 +59,8 @@ abstract class FieldBase
     protected $allowedAttrForTextarea = ['name', 'id', 'cols', 'rows', 'class', 'maxlength', 'placeholder', 'required', 'wrap', 'readonly', 'form'];
 
     protected $showBootstrap = false;
+    
+    protected $form;
 
     public function __construct(string $name, $value = null, string $type = 'text', $showBootstrap = false)
     {
@@ -106,7 +109,7 @@ abstract class FieldBase
      * de la lista FIELD_TYPES_LIST
      * 
      * @param string $type
-     * @return Field
+     * 
      */
     public function setType(string $type)
     {        
@@ -120,12 +123,8 @@ abstract class FieldBase
     {
         $ret = '';
         
-        if($this->showBootstrap){
-            $this->setClassBootstrap();
-        }
-        
-        if($this->showLabel){
-            $ret .= $this->renderLabel();
+        if( !is_null($this->getForm()) and $this->getForm()->showBootstrap ){
+            $this->showBootstrap = true;
         }
         
         switch ($this->getType()) {
@@ -135,12 +134,14 @@ abstract class FieldBase
                 break;
             case 'date': $ret .= $this->renderDate();
                 break;
+            case 'radio': $ret .= $this->renderRadio();
+                break;
+            case 'checkbox': $ret .= $this->renderCheckbox();
+                break;
+            case 'submit': $ret .= $this->renderSubmit();
+                break;
             default: $ret .= $this->renderDefault();
                 break;
-        }
-        
-        if($this->showBootstrap){
-            $ret = "<div class='form-group'>\n{$ret}</div>\n";
         }
         
         return $ret;
@@ -203,19 +204,96 @@ abstract class FieldBase
         return $ret;
     }
 
-    public function renderDefault()
+    protected function renderDefault()
     {
+        $ret = "";
+        if($this->showLabel){
+            $ret .= $this->renderLabel();
+        }
+        
+        if($this->showBootstrap){
+            $this->setClassBootstrap();
+        }
+        
+        $attr = $this->renderAttributes();
+        $ret .= "\t<input {$attr}/><br>\n";
+        
+        if($this->showBootstrap){
+            $ret = "<div class='form-group'>\n{$ret}</div>\n";
+        }
+        
+        return $ret;
+    }
+    
+    protected function renderRadio()
+    {
+        if($this->showBootstrap){
+            $this->setClassBootstrap();
+        }
+        
+        $attr = $this->renderAttributes();
+        $ret = "\t<input {$attr}/>\n";
+        if($this->showLabel){
+            $ret .= $this->renderLabelRadio();
+        }
+        
+        if($this->showBootstrap){
+            $ret = "<div class='radio'>\n{$ret}</div>\n";
+        }
+        
+        return $ret;
+    }
+    
+    protected function renderCheckbox()
+    {
+        if($this->showBootstrap){
+            $this->setClassBootstrap();
+        }
+        
+        $attr = $this->renderAttributes();
+        $ret = "\t<input {$attr}/>\n";
+        if($this->showLabel){
+            $ret .= $this->renderLabelCheckbox();
+        }
+        
+        if($this->showBootstrap){
+            $ret = "<div class='checkbox'>\n{$ret}</div>\n";
+        }
+        
+        return $ret;
+    }
+    
+    protected function renderSubmit()
+    {
+        if($this->showBootstrap){
+            $this->setClass('btn');
+        }
         $attr = $this->renderAttributes();
         $ret = "\t<input {$attr}/>\n";
         return $ret;
     }
-    
-    public function renderSelect()
+
+
+    protected function renderSelect()
     {
+        $ret = "";
+        if($this->showLabel){
+            $ret .= $this->renderLabel();
+        }
+        
+        if($this->showBootstrap){
+            $this->setClassBootstrap();
+        }
+        
         $attr = $this->renderAttributes();
-        $ret = "\t<select {$attr}>\n";
+        $ret .= "\t<select {$attr}>\n";
         $ret .= $this->renderOptions();
-        $ret .= "\t</select>\n";
+        $ret .= "\t</select><br>\n";
+        
+        if($this->showBootstrap){
+            $ret = "<div class='form-group'>\n{$ret}</div>\n";
+        }
+        
         return $ret;
     }
     
@@ -231,26 +309,54 @@ abstract class FieldBase
             }
         }
         
-        
         return $ret;
     }
     
     protected function renderTextArea()
     {
-        $ret = "\t<textarea " . $this->renderAttributes() . ">\n";
-        $ret .= $this->getValue() ."\n";
-        $ret .= "\t</textarea>\n";
+        $ret = "";
+        if($this->showLabel){
+            $ret .= $this->renderLabel();
+        }
+        
+        if($this->showBootstrap){
+            $this->setClassBootstrap();
+        }
+        
+        $ret .= "\t<textarea " . $this->renderAttributes() . ">";
+        $ret .= $this->getValue();
+        $ret .= "</textarea><br>\n";
+        
+        if($this->showBootstrap){
+            $ret = "<div class='form-group'>\n{$ret}</div>\n";
+        }
+        
         return $ret;
     }
     
     protected function renderDate()
     {
+        $ret = "";
+        if($this->showLabel){
+            $ret .= $this->renderLabel();
+        }
+        
         if("" != $this->getValue()){
             $value = date('Y-m-d', strtotime($this->getValue()));
             $this->setValue($value);
         }
         
-        return "\t<input " . $this->renderAttributes() . "/>\n";
+        if($this->showBootstrap){
+            $this->setClassBootstrap();
+        }
+        
+        $ret .= "\t<input " . $this->renderAttributes() . "/><br>\n";
+        
+        if($this->showBootstrap){
+            $ret = "<div class='form-group'>\n{$ret}</div>\n";
+        }
+        
+        return $ret;
     }
 
     protected function getOptionSelected()
@@ -290,10 +396,9 @@ abstract class FieldBase
         $this->showBootstrap = true === $show;
         return $this;
     }
-
-
-    public function renderLabel()
-    {        
+    
+    protected function renderLabelAttibutes()
+    {
         $renderAttributes = [];
         foreach ($this->labelAttributes as $attribute => $value){
             if("" != $value){
@@ -301,14 +406,39 @@ abstract class FieldBase
             }
         }
         
-        $attr =  implode(" ", $renderAttributes);
-        $ret = "\t<label {$attr}>";
+        return implode(" ", $renderAttributes);
+    }
+
+    protected function renderLabel()
+    {        
+        $attr = $this->renderLabelAttibutes();
+        $ret = "<label {$attr}>";
         $ret .= $this->getLabel();
-        $ret .= " &nbsp </label>\n";
+        $ret .= "</label><br>\n";
 
         return $ret;      
     }
     
+    protected function renderLabelRadio()
+    {
+        $attr = $this->renderLabelAttibutes();
+        $ret = "<label {$attr}>";
+        $ret .= $this->getLabel();
+        $ret .= "</label><br>\n";
+
+        return $ret; 
+    }
+    
+    protected function renderLabelCheckbox()
+    {
+        $attr = $this->renderLabelAttibutes();
+        $ret = "<label {$attr}>";
+        $ret .= $this->getLabel();
+        $ret .= "</label><br>\n";
+
+        return $ret; 
+    }
+
     public function toJson()
     {
         $ret = array_filter($this->getAttributes());
@@ -449,7 +579,7 @@ abstract class FieldBase
         return $this->attributes['required'];
     }
 
-    public function getForm()
+    public function getFormTarget()
     {
         return $this->attributes['form'];
     }
@@ -518,6 +648,11 @@ abstract class FieldBase
     {
         return $this->attributes['selected'];
     }
+    
+    public function getChecked()
+    {
+        return $this->attributes['checked'];
+    }
 
     public function getMultiple()
     {
@@ -580,21 +715,22 @@ abstract class FieldBase
         return $this;
     }
     
-    public function setClassBootstrap()
+    protected function setClassBootstrap()
     {
-        $class = $this->getClass();
+        $bootstrapClass = "";
         switch ($this->getType()){
             case 'radio':
-            case 'checkbox': $class .= " form-check-input";
+            case 'checkbox': $bootstrapClass = "form-check-input";
                 break;
-            case 'range': $class .= " form-control-range";
+            case 'range': $bootstrapClass = "form-control-range";
                 break;
-            case 'file': $class .= " form-control-file";
+            case 'file': $bootstrapClass = "form-control-file";
                 break;
-            default : $class .= " form-control";
+            default : $bootstrapClass = "form-control";
                 break;
         }
         
+        $class = !empty($this->getClass()) ? $this->getClass() . " " . $bootstrapClass : $bootstrapClass;        
         $this->setClass($class);
         return $this;
     }
@@ -635,7 +771,7 @@ abstract class FieldBase
         return $this;
     }
 
-    public function setForm($form)
+    public function setFormTarget($form)
     {
         $this->attributes['form'] = $form;
         return $this;
@@ -718,6 +854,12 @@ abstract class FieldBase
         $this->attributes['selected'] = true === $selected;
         return $this;
     }
+    
+    public function setChecked($checked = true)
+    {
+        $this->attributes['checked'] = true === $checked;
+        return $this;
+    }
 
     public function setMultiple($multiple = true)
     {
@@ -758,6 +900,25 @@ abstract class FieldBase
     public function setWrap($wrap)
     {
         $this->attributes['wrap'] = $wrap;
+        return $this;
+    }
+    
+    public function setConstraint(array $constraint)
+    {
+        
+    }
+    
+    public function getForm()
+    {
+        return $this->form;
+    }
+    
+    public function setForm($form)
+    {
+        if(!is_null($form)){
+            $this->form = $form;
+        }
+        
         return $this;
     }
 }

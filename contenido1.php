@@ -17,22 +17,18 @@ require_once 'Form.php';
 use formGenereitor\{Field, Fieldset, Form};
 
 
-// cuando se crea un campo, se setean automaticamente los atributos name, id, placeholder y title
-$campo = new Field('nombre',3, 'textarea');
+// cuando se crea un campo, el únivo parametro necesario es el valor para el atributos name, los atributos id, placeholder y title toman el mismo valor que name por defecto
+$campo = new Field('nombre');
 echo $campo->setOptions(['papa', 'ajo', 'cebolla']);
-echo "<br>";
 
 // los valores de los atributos se pueden cambiar
-//echo $campo->setPlaceholder('Indique su Nombre');
-echo "<br>";
+echo $campo->setPlaceholder('Indique su Nombre');
 
 // se puede indicar si se quiere mostrar la label del campo
-echo $campo->showLabel();
-echo "<br>";
+echo $campo->showLabel(false);
 
 // se puede cambiar la label
-echo $campo->setLabel('Indique su Nombre');
-echo "<br>";
+echo $campo->setLabel('Indique su Nombre')->showLabel();
 
 // tener en cuenta que si se cambia el id del campo, tambien se deberia cambiar el for del label
 echo $campo->setId(25)->setLabelFor(25);

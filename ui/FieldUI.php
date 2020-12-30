@@ -27,18 +27,12 @@ interface FieldUI
     public function setType(string $type);
     
     public function render();
-
-    public function renderDefault();
-    
-    public function renderSelect();
     
     public function setOptions(array $options, $selected = null);
     
     public function showLabel($show = true);
     
     public function showBootstrap($show = true);
-
-    public function renderLabel();
     
     public function toJson();
     
@@ -117,6 +111,8 @@ interface FieldUI
     public function getAutocomplete();
 
     public function getSelected();
+    
+    public function getChecked();
 
     public function getMultiple();
 
@@ -135,8 +131,6 @@ interface FieldUI
     public function setName($name);
 
     public function setId($id);
-    
-    public function setClassBootstrap();
 
     public function setClass($class);
 
@@ -177,6 +171,8 @@ interface FieldUI
     public function setAutocomplete($autocomplete = true);
 
     public function setSelected($selected = true);
+    
+    public function setChecked($checked = true);
 
     public function setMultiple($multiple = true);
 

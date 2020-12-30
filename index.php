@@ -11,16 +11,26 @@
     <!-- Bootstrap 3 CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
-    <title>formGenereitor 2.0</title>
+    <title>FormGenereitor 2.0</title>
+    <style>
+        body {
+            padding-top: 70px;
+        }
+    </style>
   </head>
   <body>
 
         <main>
+            
+            <!-- navBar -->
+            <?php include_once 'includes/navBar.php'; ?>
+            <!-- /navBar -->
+            
             <div class="container">
                 <div class="row">
                     <div class="col-md-12">
                         <h1>Form Genereitor 2.0</h1>
-                        <?php include_once 'content.php' ?>
+                        <?php include_once 'contenido3.php' ?>
                     </div>
                 </div>
             </div>

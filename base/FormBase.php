@@ -20,6 +20,7 @@ use formGenereitor\ui\FieldUI;
 
 /**
  * Description of FormBase
+ * poner la opcion del bootstrap y show label
  *
  * @author Rafael Pérez.
  */
@@ -27,7 +28,10 @@ abstract class FormBase
 {
     protected $readOnly = false;
     protected $attributes = ['id' => '', 'class' => '', 'action' => '', 'method' => '', 'name' => '', 'caption' => '', 'fieldsets' => [], 'fields' => [], 'autocomplete' => '', 'novalidate' => '', 'enctype' => '', 'target' => '', 'accept' => '', 'enctype' => ''];
+    protected $errors = [];
     
+    public $showBootstrap = false;
+
     const METHOD_LIST = ['get', 'post'];
 
     public function __construct($fiels = [], $action = "", $method = 'post')
@@ -42,13 +46,19 @@ abstract class FormBase
         $this->readOnly = true === $readOnly;
         return $this;
     }
+    
+    public function showBootstrap($show = true)
+    {
+        $this->showBootstrap = true === $show;
+        return $this;
+    }
 
     /**
      * Obtiene un objeto Field por el valor de un parametro (por defecto, el parametro name)
      *
      * @param $paramValue
      * @param string $param
-     * @return Field|mixed
+     * |mixed
      */
     public function getFieldByParamValue($paramValue, $param = 'name')
     {
@@ -315,5 +325,15 @@ abstract class FormBase
         $validMethod = isset(self::METHOD_LIST[$method]) ? $method : 'post';
         $this->attributes['method'] = $validMethod;
         return $this;
+    }
+    
+    public function getErrors()
+    {
+        return $this->errors;
+    }
+    
+    public function validate()
+    {
+        return empty($this->getErrors());
     }
 }
