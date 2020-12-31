@@ -20,8 +20,6 @@ namespace formGenereitor\ui;
  */
 interface FormUI
 {
-    public function getFieldByParamValue($paramValue, $param = 'name');
-
     public function render();
 
     public function toJson();
@@ -43,6 +41,10 @@ interface FormUI
     public function getFieldsets();
 
     public function getFields();
+    
+    public function addField(FieldUI $field);
+    
+    public function getFieldByName($name);
 
     public function getAutocomplete();
 

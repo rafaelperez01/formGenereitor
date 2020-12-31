@@ -33,6 +33,7 @@ class Form extends base\FormBase implements ui\FormUI
     public function createField($name, $value = '')
     {
         $field = new Field($name, $value);
+        $this->addField($field);
         $field->setForm($this);
         return $field;
     }

@@ -51,26 +51,22 @@ abstract class FormBase
     {
         $this->showBootstrap = true === $show;
         return $this;
-    }
-
-    /**
-     * Obtiene un objeto Field por el valor de un parametro (por defecto, el parametro name)
-     *
-     * @param $paramValue
-     * @param string $param
-     * |mixed
-     */
-    public function getFieldByParamValue($paramValue, $param = 'name')
+    }   
+    
+    public function addField(FieldUI $field)
     {
-        $fieldMethod = "get" . ucfirst(strtolower($param));
+        $this->attributes['fields'][$field->getName()] = $field;
+        return $this;
+    }
+    
+    public function getFieldByName($name)
+    {
         $ret = null;
-        foreach($this->getFields() as $field){
-            if ($field->$fieldMethod() == $paramValue){
-                $ret = $field;
-            }
+        if(isset($this->attributes['fields'][$name])){
+            $ret = $this->attributes['fields'][$name];
         }
-
-        return $ret ?? new Field;
+        
+        return $ret;
     }
 
     public function render()

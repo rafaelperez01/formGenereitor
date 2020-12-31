@@ -7,7 +7,7 @@
 
     <?php include_once 'includes/bootstrap.php'; ?>
 
-    <title>FormGenereitor 2.0</title>
+    <title>Probando</title>
     <style>
         body {
             padding-top: 70px;
@@ -25,25 +25,30 @@
             <div class="container">
                 <div class="row">
                     <div class="col-md-12">
-                        <h1>Form Genereitor 2.0</h1>
-                        <?php 
+                        <h1>Probando</h1>
                         
-                        require_once 'Field.php';
-                        require_once 'Fieldset.php';
-                        require_once 'Form.php';
+                        
+                            <?php                      
+                            require_once 'Field.php';
+                            require_once 'Fieldset.php';
+                            require_once 'Form.php';
 
-                        use formGenereitor\{Field, Fieldset, Form};
+                            use formGenereitor\{Field, Fieldset, Form};
+
+                            $form = new Form();
+                            $form->showBootstrap();
+                            $nombre = $form->createField('nombre');
+                            $nombre->setLabel('Indique su Nombre')->setRequired();
+                            echo $nombre;
+                            
+                            $apellidos = $form->createField('apellidos');
+                            $apellidos->setLabel('Indique sus Apellidos')->setRequired();
+                            echo $apellidos;
+                            
+                            var_dump($form->getFieldByName('apellidos'));
+                            ?>
                         
-                        $fields = ['submit', 'button', 'reset', 'text', 'tel', 'textarea', 'password', 'select', 'checkbox', 'radio', 'color', 'date', 'datetime-local', 'month', 'week', 'number', 'email', 'file', 'hidden', 'image', 'range', 'search',  'time', 'url',];
                         
-                        echo "<h3>Creando todos los campo</h3>";
-                        
-                        foreach ($fields as $value) {
-                            $field = new Field($value, $value, $value);
-                            echo $field;
-                        }
-                        
-                        ?>
                     </div>
                 </div>
             </div>

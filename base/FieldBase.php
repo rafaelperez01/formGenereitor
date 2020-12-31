@@ -52,11 +52,11 @@ abstract class FieldBase
     
     // Options for field type select
     protected $selectOptions = [];
-    protected $allowedAttrForSelect = ['name', 'id', 'class', 'required', 'readonly', 'form'];
+    static $allowedAttrForSelect = ['name', 'id', 'class', 'required', 'readonly', 'form'];
     protected $optionSelected = '';
     
     // Options for field type textarea
-    protected $allowedAttrForTextarea = ['name', 'id', 'cols', 'rows', 'class', 'maxlength', 'placeholder', 'required', 'wrap', 'readonly', 'form'];
+    static $allowedAttrForTextarea = ['name', 'id', 'cols', 'rows', 'class', 'maxlength', 'placeholder', 'required', 'wrap', 'readonly', 'form'];
 
     protected $showBootstrap = false;
     
@@ -115,6 +115,9 @@ abstract class FieldBase
     {        
         $type = strtolower($type);
         $this->attributes['type'] = in_array($type, self::FIELD_TYPES_LIST) ? $type : 'text';
+        if('submit' == $this->getType()){
+            $this->showLabel(false);
+        }
         
         return $this;        
     }    
@@ -138,6 +141,8 @@ abstract class FieldBase
                 break;
             case 'checkbox': $ret .= $this->renderCheckbox();
                 break;
+            case 'reset':
+            case 'button':
             case 'submit': $ret .= $this->renderSubmit();
                 break;
             default: $ret .= $this->renderDefault();
@@ -180,7 +185,7 @@ abstract class FieldBase
     {
         $ret = [];
         $attrList = $this->getAttributes();
-        foreach ($this->allowedAttrForTextarea as $attr){
+        foreach (self::$allowedAttrForTextarea as $attr){
             $attrValue = $attrList[$attr];
             if(!is_null($attrValue)){
                 $ret[$attr] = $attrValue;
@@ -194,7 +199,7 @@ abstract class FieldBase
     {
         $ret = [];
         $attrList = $this->getAttributes();
-        foreach ($this->allowedAttrForSelect as $attr){
+        foreach (self::$allowedAttrForSelect as $attr){
             $attrValue = $attrList[$attr];
             if(!is_null($attrValue)){
                 $ret[$attr] = $attrValue;
@@ -234,7 +239,12 @@ abstract class FieldBase
         $attr = $this->renderAttributes();
         $ret = "\t<input {$attr}/>\n";
         if($this->showLabel){
-            $ret .= $this->renderLabelRadio();
+            $attr = $this->renderLabelAttibutes();
+            $label = "\t<label {$attr}>";
+            $label .= $ret;
+            $label .= $this->getLabel();
+            $label .= "</label><br>\n";
+            $ret = $label;
         }
         
         if($this->showBootstrap){
@@ -253,7 +263,12 @@ abstract class FieldBase
         $attr = $this->renderAttributes();
         $ret = "\t<input {$attr}/>\n";
         if($this->showLabel){
-            $ret .= $this->renderLabelCheckbox();
+            $attr = $this->renderLabelAttibutes();
+            $label = "\t<label {$attr}>\n";
+            $label .= $ret;
+            $label .= $this->getLabel() . "\n";
+            $label .= "</label><br>\n";
+            $ret = $label;
         }
         
         if($this->showBootstrap){
@@ -266,10 +281,11 @@ abstract class FieldBase
     protected function renderSubmit()
     {
         if($this->showBootstrap){
-            $this->setClass('btn');
+            $class = $this->getClass() . " btn";
+            $this->setClass($class);
         }
         $attr = $this->renderAttributes();
-        $ret = "\t<input {$attr}/>\n";
+        $ret = "\t<input {$attr}/><br>\n";
         return $ret;
     }
 
@@ -412,31 +428,11 @@ abstract class FieldBase
     protected function renderLabel()
     {        
         $attr = $this->renderLabelAttibutes();
-        $ret = "<label {$attr}>";
+        $ret = "\t<label {$attr}>";
         $ret .= $this->getLabel();
         $ret .= "</label><br>\n";
 
         return $ret;      
-    }
-    
-    protected function renderLabelRadio()
-    {
-        $attr = $this->renderLabelAttibutes();
-        $ret = "<label {$attr}>";
-        $ret .= $this->getLabel();
-        $ret .= "</label><br>\n";
-
-        return $ret; 
-    }
-    
-    protected function renderLabelCheckbox()
-    {
-        $attr = $this->renderLabelAttibutes();
-        $ret = "<label {$attr}>";
-        $ret .= $this->getLabel();
-        $ret .= "</label><br>\n";
-
-        return $ret; 
     }
 
     public function toJson()
@@ -720,11 +716,11 @@ abstract class FieldBase
         $bootstrapClass = "";
         switch ($this->getType()){
             case 'radio':
-            case 'checkbox': $bootstrapClass = "form-check-input";
+            case 'checkbox': $bootstrapClass = "";//"form-check-input";
                 break;
-            case 'range': $bootstrapClass = "form-control-range";
+            case 'range': $bootstrapClass = "";//"form-control-range";
                 break;
-            case 'file': $bootstrapClass = "form-control-file";
+            case 'file': $bootstrapClass = "";//"form-control-file";
                 break;
             default : $bootstrapClass = "form-control";
                 break;
@@ -765,7 +761,7 @@ abstract class FieldBase
         return $this;
     }
 
-    public function setRequired($required)
+    public function setRequired($required = true)
     {
         $this->attributes['required'] = $required;
         return $this;
