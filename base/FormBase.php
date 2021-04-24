@@ -323,6 +323,11 @@ abstract class FormBase
         return $this;
     }
     
+    public function createFromObj($model)
+    {
+        $fields = 54;
+    }
+    
     public function getErrors()
     {
         return $this->errors;

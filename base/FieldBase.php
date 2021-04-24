@@ -52,15 +52,19 @@ abstract class FieldBase
     
     // Options for field type select
     protected $selectOptions = [];
+    // TODO: cambiar este parametro a constante
     static $allowedAttrForSelect = ['name', 'id', 'class', 'required', 'readonly', 'form'];
     protected $optionSelected = '';
     
     // Options for field type textarea
+    // TODO: cambiar este parametro a constante
     static $allowedAttrForTextarea = ['name', 'id', 'cols', 'rows', 'class', 'maxlength', 'placeholder', 'required', 'wrap', 'readonly', 'form'];
 
     protected $showBootstrap = false;
     
     protected $form;
+    
+    protected $constraint;
 
     public function __construct(string $name, $value = null, string $type = 'text', $showBootstrap = false)
     {
@@ -114,11 +118,7 @@ abstract class FieldBase
     public function setType(string $type)
     {        
         $type = strtolower($type);
-        $this->attributes['type'] = in_array($type, self::FIELD_TYPES_LIST) ? $type : 'text';
-        if('submit' == $this->getType()){
-            $this->showLabel(false);
-        }
-        
+        $this->attributes['type'] = in_array($type, self::FIELD_TYPES_LIST) ? $type : 'text';        
         return $this;        
     }    
     
@@ -280,6 +280,7 @@ abstract class FieldBase
     
     protected function renderSubmit()
     {
+        $this->showLabel(false);
         if($this->showBootstrap){
             $class = $this->getClass() . " btn";
             $this->setClass($class);
@@ -901,7 +902,7 @@ abstract class FieldBase
     
     public function setConstraint(array $constraint)
     {
-        
+        $this->constraint = $constraint;
     }
     
     public function getForm()
