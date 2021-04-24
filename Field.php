@@ -24,5 +24,7 @@ require_once 'ui/FieldUI.php';
  */
 class Field extends base\FieldBase implements ui\FieldUI
 {
-    //put your code here
+    /* 
+     * put your code here
+     */
 }

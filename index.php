@@ -34,14 +34,27 @@
 
                         use formGenereitor\{Field, Fieldset, Form};
                         
-                        $fields = ['submit', 'button', 'reset', 'text', 'tel', 'textarea', 'password', 'select', 'checkbox', 'radio', 'color', 'date', 'datetime-local', 'month', 'week', 'number', 'email', 'file', 'hidden', 'image', 'range', 'search',  'time', 'url',];
+                        $fields = ['text', 'tel', 'textarea', 'password', 'select', 'checkbox', 'radio', 'color', 'date', 'datetime-local', 'month', 'week', 'number', 'email', 'file', 'hidden', 'image', 'range', 'search',  'time', 'url', 'submit', 'button', 'reset', ];
                         
                         echo "<h3>Creando todos los campo</h3>";
                         
+                        if(isset($_POST)){
+                            var_dump($_POST);
+                        }
+                        
+                        $form = new Form;
+                        $fieldList = [];
                         foreach ($fields as $value) {
                             $field = new Field($value, $value, $value);
-                            echo $field;
+                            if('select' == $value){
+                                $opcion = [' - ', 'rojo' => 'rojo', 'azul', 'amarillo', 'verde', 'naranja', 'morado'];
+                                $field->setOptions($opcion);
+                            }
+                            $fieldList[] = $field;
                         }
+                        
+                        $form->addFields($fieldList);
+                        echo $form;
                         
                         ?>
                     </div>

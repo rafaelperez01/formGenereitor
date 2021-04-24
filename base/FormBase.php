@@ -59,6 +59,17 @@ abstract class FormBase
         return $this;
     }
     
+    public function addFields(array $fieldList)
+    {
+        if(!empty($fieldList)){
+            foreach ($fieldList as $field){
+                $this->addField($field);                
+            }
+        }
+        
+        return $this;
+    }
+    
     public function getFieldByName($name)
     {
         $ret = null;
@@ -110,10 +121,14 @@ abstract class FormBase
     {
         $ret = "";
         if(!empty($this->getFields())){
+            
+            $firstField = reset($this->getFields());
+            $firstField->setAutofocus();
+            
             foreach($this->getFields() as $field){
                 if($this->readOnly){
                     $field->setReadOnly();
-                }
+                }                
                 $ret .= $field->render();
             }
         }

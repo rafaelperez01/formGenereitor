@@ -16,11 +16,8 @@
  * TODO: 
  * tener en cuenta al momento de subir un archivo o imagen, hacer que el formulario acepte el formato
  * 
- * hacer el primer campo que siempre haga autofocus
- * 
  * hacer una clase manejador de formulario, que valide, mueva, recorte las imagenes, que valide los formularios y muestres mensajes de error, que indique cuales campos serán tipo select, etc que tambien indique si el formulario tiene estilos bootstrap, que filtre/escape/limpie/valide los campos de acuerdo a tu tipo
  * 
- * usar interfaces para inyectar las dependencias, es decir, que la clase FieldSetBase tiene que recibir por parametro la interface FieldBase y que la clase FormBase tiene que recibir por parametro la interface FieldSetBase y FieldBase 
  * 
  * 
  */
@@ -39,7 +36,6 @@ abstract class FieldBase
      * campo, pero si los más usados.
      * Para saber todos los atributos permitidos visitar:
      * https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes
-     * @var type 
      */
     protected $attributes = ['name' => '', 'type' => 'text', 'id' => '', 'class' => '', 'value' => '', 'style' => '', 'alt' => '', 'title' => '', 'placeholder' => '', 'required' => '', 'form' => '', 'maxlength' => '', 'minlength' => '', 'max' => '', 'min' => '', 'rows' => '', 'cols' => '', 'wrap' => '', 'width' => '', 'height' => '', 'disabled' => '', 'readonly' => '', 'autofocus' => '', 'autocomplete' => '', 'selected' => '', 'checked' => '', 'multiple' => '', 'step' => '', 'size' => '',  'src' => '', 'pattern' => '', 'accept' => '',];
     
@@ -52,13 +48,11 @@ abstract class FieldBase
     
     // Options for field type select
     protected $selectOptions = [];
-    // TODO: cambiar este parametro a constante
-    static $allowedAttrForSelect = ['name', 'id', 'class', 'required', 'readonly', 'form'];
+    const ALLOWED_ATTRIBUTES_FOR_SELECT = ['name', 'id', 'class', 'required', 'readonly', 'form'];
     protected $optionSelected = '';
     
     // Options for field type textarea
-    // TODO: cambiar este parametro a constante
-    static $allowedAttrForTextarea = ['name', 'id', 'cols', 'rows', 'class', 'maxlength', 'placeholder', 'required', 'wrap', 'readonly', 'form'];
+    const ALLOWED_ATTRIBUTER_FOR_TEXTAREA = ['name', 'id', 'cols', 'rows', 'class', 'maxlength', 'placeholder', 'required', 'wrap', 'readonly', 'form'];
 
     protected $showBootstrap = false;
     
@@ -185,7 +179,7 @@ abstract class FieldBase
     {
         $ret = [];
         $attrList = $this->getAttributes();
-        foreach (self::$allowedAttrForTextarea as $attr){
+        foreach (self::ALLOWED_ATTRIBUTER_FOR_TEXTAREA as $attr){
             $attrValue = $attrList[$attr];
             if(!is_null($attrValue)){
                 $ret[$attr] = $attrValue;
@@ -199,7 +193,7 @@ abstract class FieldBase
     {
         $ret = [];
         $attrList = $this->getAttributes();
-        foreach (self::$allowedAttrForSelect as $attr){
+        foreach (self::ALLOWED_ATTRIBUTES_FOR_SELECT as $attr){
             $attrValue = $attrList[$attr];
             if(!is_null($attrValue)){
                 $ret[$attr] = $attrValue;

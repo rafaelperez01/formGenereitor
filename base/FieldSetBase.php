@@ -83,6 +83,9 @@ abstract class FieldSetBase
             $ret .= "\t<legend>{$this->getLegend()}</legend>\n";
         }
         
+        $firstField = reset($this->getFields());
+        $firstField->setAutofocus();
+        
         foreach ($this->getFields() as $key => $field){
             if($field instanceof FieldUI){
                 $f = $field;

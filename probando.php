@@ -37,15 +37,22 @@
 
                             $form = new Form();
                             $form->showBootstrap();
+                            echo $form->start();
+                            
                             $nombre = $form->createField('nombre');
-                            $nombre->setLabel('Indique su Nombre')->setRequired();
+                            $nombre->setLabel('Indique su Nombre')->setRequired()->setMaxlength(5);
                             echo $nombre;
                             
                             $apellidos = $form->createField('apellidos');
                             $apellidos->setLabel('Indique sus Apellidos')->setRequired();
                             echo $apellidos;
                             
-                            var_dump($form->getFieldByName('apellidos'));
+                            $aceptar = $form->createField('aceptar');
+                            $aceptar->setType('submit');
+                            echo $aceptar;
+                            
+                            echo $form->end();
+                            //var_dump($form->getFieldByName('apellidos'));
                             ?>
                         
                         
