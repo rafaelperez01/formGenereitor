@@ -34,12 +34,13 @@
 
                         use formGenereitor\{Field, Fieldset, Form};
                         
-                        $fields = ['text', 'tel', 'textarea', 'password', 'select', 'checkbox', 'radio', 'color', 'date', 'datetime-local', 'month', 'week', 'number', 'email', 'file', 'hidden', 'image', 'range', 'search',  'time', 'url', 'submit', 'button', 'reset', ];
+                        $fields = ['text', 'tel', 'textarea', 'password', 'select', 'checkbox', 'radio', 'color', 'date', 'datetime-local', 'month', 'week', 'number', 'file', 'hidden', 'image', 'range', 'search',  'time', 'submit', 'button', 'reset', /*'email', 'url',*/];
                         
                         echo "<h3>Creando todos los campo</h3>";
                         
                         if(isset($_POST)){
                             var_dump($_POST);
+                            var_dump($_FILES);
                         }
                         
                         $form = new Form;
@@ -50,10 +51,19 @@
                                 $opcion = [' - ', 'rojo' => 'rojo', 'azul', 'amarillo', 'verde', 'naranja', 'morado'];
                                 $field->setOptions($opcion);
                             }
+                            /*
+                            if('file' == $value){
+                                $field->setAccept('image/*');
+                            }
+                             * 
+                             */
+                            
                             $fieldList[] = $field;
                         }
                         
                         $form->addFields($fieldList);
+                        
+                        $form->setFieldsDisabled(['search', 'tel', 'password']);
                         echo $form;
                         
                         ?>

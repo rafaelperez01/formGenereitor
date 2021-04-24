@@ -15,7 +15,8 @@
 /**
  * TODO: 
  * tener en cuenta al momento de subir un archivo o imagen, hacer que el formulario acepte el formato
- * 
+ * gestionar la etiqueta optgroup de los select
+ * gestionar la etiqueta datalist 
  * hacer una clase manejador de formulario, que valide, mueva, recorte las imagenes, que valide los formularios y muestres mensajes de error, que indique cuales campos serán tipo select, etc que tambien indique si el formulario tiene estilos bootstrap, que filtre/escape/limpie/valide los campos de acuerdo a tu tipo
  * 
  * 
@@ -383,8 +384,11 @@ abstract class FieldBase
 
     public function setOptions(array $options, $selected = null)
     {
-        $this->selectOptions = $options;
-        $this->setOptionSelected($selected);
+        if(!empty($options)){
+            $this->selectOptions = $options;
+            $this->setOptionSelected($selected);
+        }
+        
         return $this;
     }
     

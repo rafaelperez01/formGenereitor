@@ -27,7 +27,7 @@ use formGenereitor\ui\FieldUI;
 abstract class FormBase 
 {
     protected $readOnly = false;
-    protected $attributes = ['id' => '', 'class' => '', 'action' => '', 'method' => '', 'name' => '', 'caption' => '', 'fieldsets' => [], 'fields' => [], 'autocomplete' => '', 'novalidate' => '', 'enctype' => '', 'target' => '', 'accept' => '', 'enctype' => ''];
+    protected $attributes = ['id' => '', 'class' => '', 'action' => '', 'method' => '', 'name' => '', 'caption' => '', 'fieldsets' => [], 'fields' => [], 'autocomplete' => '', 'novalidate' => '', 'enctype' => '', 'target' => '', 'accept' => 'image/*,.pdf', 'enctype' => 'multipart/form-data'];
     protected $errors = [];
     
     public $showBootstrap = false;
@@ -47,6 +47,57 @@ abstract class FormBase
         return $this;
     }
     
+    /**
+     * 
+     * @param array $fieldList
+     * @return $this
+     */
+    public function setFieldsReadOnly(array $fieldList)
+    {
+        if(!empty($fieldList)){
+            foreach ($fieldList as $field){                
+                if($f = $this->getFieldByName($field)){                    
+                    $f->setReadonly();
+                }
+            }
+        }
+        
+        return $this;
+    }
+    
+    /**
+     * 
+     * @param array $fieldList
+     * @return $this
+     */
+    public function setFieldsDisabled(array $fieldList)
+    {
+        if(!empty($fieldList)){
+            foreach ($fieldList as $field){                
+                if($f = $this->getFieldByName($field)){                    
+                    $f->setDisabled();
+                }
+            }
+        }
+        
+        return $this;
+    }
+    
+    /**
+     * 
+     * @param type $fieldName
+     * @param array $options
+     * @return $this
+     */
+    public function setFieldOptions($fieldName, array $options)
+    {
+        if($f = $this->getFieldByName($fieldName) and !empty($options)){
+            $f->setOptions($options);
+        }
+        
+        return $this;
+    }
+
     public function showBootstrap($show = true)
     {
         $this->showBootstrap = true === $show;
@@ -59,6 +110,11 @@ abstract class FormBase
         return $this;
     }
     
+    /**
+     * Añade una lista de objetos de tipo FieldUI
+     * @param array $fieldList
+     * @return $this
+     */
     public function addFields(array $fieldList)
     {
         if(!empty($fieldList)){
@@ -284,6 +340,12 @@ abstract class FormBase
         return $this;
     }
 
+    /**
+     * Crea objetos de tipo FieldUI a partir de un nombre y los añade a la lista
+     * de campos
+     * @param array $fields
+     * @return $this
+     */
     public function setFields(array $fields)
     {
 
