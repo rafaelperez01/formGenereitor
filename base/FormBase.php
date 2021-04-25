@@ -103,6 +103,24 @@ abstract class FormBase
     
     /**
      * 
+     * @param array $fieldList
+     * @return $this
+     */
+    public function setFieldsAsTextArea(array $fieldList)
+    {
+        if(!empty($fieldList)){
+            foreach ($fieldList as $field){                
+                if($f = $this->getFieldByName($field)){                    
+                    $f->setType('textarea');
+                }
+            }
+        }
+        
+        return $this;
+    }
+    
+    /**
+     * 
      * @param type $fieldName
      * @param array $options
      * @return $this

@@ -38,7 +38,7 @@
                         
                         echo "<h3>Creando todos los campo</h3>";
                         
-                        if(isset($_POST)){
+                        if(isset($_POST['submit'])){
                             var_dump($_POST);
                             var_dump($_FILES);
                         }
@@ -57,8 +57,9 @@
                         
                         $form->addFields($fieldList);
                         
-                        $form->setFieldsAsDisableds(['search', 'tel', 'password']);
-                        $form->setFieldsAsHidden(['color', 'number']);
+                        $form->setFieldsAsDisableds(['tel', 'password', 'select',]);
+                        $form->setFieldsAsReadOnly(['textarea', 'search']);
+                        $form->setFieldsAsTextArea(['color', 'number']);
                         echo $form;
                         
                         ?>

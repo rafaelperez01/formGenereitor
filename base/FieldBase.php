@@ -49,11 +49,11 @@ abstract class FieldBase
     
     // Options for field type select
     protected $selectOptions = [];
-    const ALLOWED_ATTRIBUTES_FOR_SELECT = ['name', 'id', 'class', 'required', 'readonly', 'form'];
+    const ALLOWED_ATTRIBUTES_FOR_SELECT = ['name', 'id', 'class', 'required', 'readonly', 'form', 'disabled'];
     protected $optionSelected = '';
     
     // Options for field type textarea
-    const ALLOWED_ATTRIBUTER_FOR_TEXTAREA = ['name', 'id', 'cols', 'rows', 'class', 'maxlength', 'placeholder', 'required', 'wrap', 'readonly', 'form'];
+    const ALLOWED_ATTRIBUTER_FOR_TEXTAREA = ['name', 'id', 'cols', 'rows', 'class', 'maxlength', 'placeholder', 'required', 'wrap', 'readonly', 'form', 'disabled'];
 
     protected $showBootstrap = false;
     
