@@ -51,19 +51,14 @@
                                 $opcion = [' - ', 'rojo' => 'rojo', 'azul', 'amarillo', 'verde', 'naranja', 'morado'];
                                 $field->setOptions($opcion);
                             }
-                            /*
-                            if('file' == $value){
-                                $field->setAccept('image/*');
-                            }
-                             * 
-                             */
                             
                             $fieldList[] = $field;
                         }
                         
                         $form->addFields($fieldList);
                         
-                        $form->setFieldsDisabled(['search', 'tel', 'password']);
+                        $form->setFieldsAsDisableds(['search', 'tel', 'password']);
+                        $form->setFieldsAsHidden(['color', 'number']);
                         echo $form;
                         
                         ?>

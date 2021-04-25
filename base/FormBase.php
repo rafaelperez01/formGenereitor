@@ -52,7 +52,7 @@ abstract class FormBase
      * @param array $fieldList
      * @return $this
      */
-    public function setFieldsReadOnly(array $fieldList)
+    public function setFieldsAsReadOnly(array $fieldList)
     {
         if(!empty($fieldList)){
             foreach ($fieldList as $field){                
@@ -70,12 +70,30 @@ abstract class FormBase
      * @param array $fieldList
      * @return $this
      */
-    public function setFieldsDisabled(array $fieldList)
+    public function setFieldsAsDisableds(array $fieldList)
     {
         if(!empty($fieldList)){
             foreach ($fieldList as $field){                
                 if($f = $this->getFieldByName($field)){                    
                     $f->setDisabled();
+                }
+            }
+        }
+        
+        return $this;
+    }
+    
+    /**
+     * 
+     * @param array $fieldList
+     * @return $this
+     */
+    public function setFieldsAsHidden(array $fieldList)
+    {
+        if(!empty($fieldList)){
+            foreach ($fieldList as $field){                
+                if($f = $this->getFieldByName($field)){                    
+                    $f->setType('hidden')->showLabel(false);
                 }
             }
         }
