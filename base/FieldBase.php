@@ -59,6 +59,8 @@ abstract class FieldBase
     
     protected $form;
     
+    protected static $id = 1;
+    
     protected $constraint;
 
     public function __construct(string $name, $value = null, string $type = 'text', $showBootstrap = false)
@@ -68,7 +70,7 @@ abstract class FieldBase
         $this->setType($type);
         $this->setPlaceholder($name);
         $this->setTitle($name);
-        $this->setId($name);
+        $this->setId('field_' . self::$id++);
         $this->setLabelFor($name);
         $this->showBootstrap($showBootstrap);
     }

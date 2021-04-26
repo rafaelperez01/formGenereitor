@@ -32,13 +32,26 @@ abstract class FormBase
     
     public $showBootstrap = false;
 
-    const METHOD_LIST = ['get', 'post'];
+    const METHOD_GET = 'get';
+    const METHOD_POST = 'post';
+    const METHOD_PUT = 'put';
+    const METHOD_DELETE = 'delete';
+    
+    const METHOD_LIST = [
+        self::METHOD_GET,
+        self::METHOD_POST,
+        self::METHOD_PUT,
+        self::METHOD_DELETE,
+    ];
+    
+    protected static $id = 1;
 
     public function __construct($fiels = [], $action = "", $method = 'post')
     {
         $this->setFields($fiels);
         $this->setAction($action);
         $this->setMethod($method);
+        $this->setId('form_' . self::$id++);
     }
 
     public function setReadOnly($readOnly)
@@ -48,7 +61,7 @@ abstract class FormBase
     }
     
     /**
-     * 
+     * Configura una lista de campos como campos de sólo lectura
      * @param array $fieldList
      * @return $this
      */
@@ -66,7 +79,7 @@ abstract class FormBase
     }
     
     /**
-     * 
+     * Configura una lista de campos como campos desabilitados
      * @param array $fieldList
      * @return $this
      */
@@ -84,7 +97,7 @@ abstract class FormBase
     }
     
     /**
-     * 
+     * Configura una lista de campos como campos ocultos
      * @param array $fieldList
      * @return $this
      */
@@ -102,7 +115,7 @@ abstract class FormBase
     }
     
     /**
-     * 
+     * Configura una lista de campos como campos de tipo textArea
      * @param array $fieldList
      * @return $this
      */
@@ -120,7 +133,7 @@ abstract class FormBase
     }
     
     /**
-     * 
+     * Configura las opciones para un campo (select, list, optgroup) 
      * @param type $fieldName
      * @param array $options
      * @return $this
@@ -134,12 +147,22 @@ abstract class FormBase
         return $this;
     }
 
+    /**
+     * Indica si se debe mostrar los estilos bootstrap
+     * @param type $show
+     * @return $this
+     */
     public function showBootstrap($show = true)
     {
         $this->showBootstrap = true === $show;
         return $this;
     }   
     
+    /**
+     * Añade o sustituye un campo en la lista de campos
+     * @param FieldUI $field
+     * @return $this
+     */
     public function addField(FieldUI $field)
     {
         $this->attributes['fields'][$field->getName()] = $field;
@@ -147,11 +170,11 @@ abstract class FormBase
     }
     
     /**
-     * Añade una lista de objetos de tipo FieldUI
-     * @param array $fieldList
+     * Añade una lista de campos (los items tienen que ser objetos de tipo FieldUI)
+     * @param array <FieldUI> $fieldList
      * @return $this
      */
-    public function addFields(array $fieldList)
+    public function addFieldList(array $fieldList)
     {
         if(!empty($fieldList)){
             foreach ($fieldList as $field){
@@ -162,6 +185,34 @@ abstract class FormBase
         return $this;
     }
     
+    /**
+     * Puede recivir un array con el par clave-valor para crear y añadir campos
+     * a partir de este, o puede recivir un array de objetos de tipo FieldUI y
+     * los añade a la lista de campos
+     * @param array $fields
+     * @return $this
+     */
+    public function setFields(array $fields)
+    {
+
+        foreach ($fields as $name => $value){
+            if($value instanceof FieldUI){
+                $f = $value;
+            } else {
+                $f = new Field($name, $value);
+            }
+
+            $this->attributes['fields'][$f->getName()] = $f;
+        }
+
+        return $this;
+    }
+    
+    /**
+     * Obtiene un campo por su nombre
+     * @param string $name
+     * @return FieldUI
+     */
     public function getFieldByName($name)
     {
         $ret = null;
@@ -171,7 +222,75 @@ abstract class FormBase
         
         return $ret;
     }
+    
+    /**
+     * Añade o sustituye un fieldset en la lista de fieldsets
+     * @param FieldSetUI $fieldset
+     * @return $this
+     */
+    public function addFieldset(FieldSetUI $fieldset)
+    {
+        $this->attributes['fieldsets'][$fieldset->getId()] = $fieldset;
+        return $this;
+    }
+    
+    /**
+     * Añade una lista de fieldset (los items tienen que ser de tipo FieldSetUI)
+     * @param array <FieldSetUI> $fieldsetList
+     * @return $this
+     */
+    public function addFieldsetList(array $fieldsetList)
+    {
+        if(!empty($fieldsetList)){
+            foreach ($fieldsetList as $fieldset){
+                $this->addFieldset($fieldset);
+            }
+        }
+        
+        return $this;
+    }
+    
+    /**
+     * Puede recivir un array con el par clave-valor para crear y añadir fieldset
+     * a partir de este, o puede recivir un array de objetos de tipo FieldSetUI y
+     * los añade a la lista de fieldset
+     * @param array $fieldsets
+     * @return $this
+     */
+    public function setFieldsets(array $fieldsets)
+    {
+        foreach ($fieldsets as $key => $fieldSet){
+            if($fieldSet instanceof FieldSetUI){
+                $f = $fieldSet;
+            } else {
+                $f = new FieldSet($fieldSet);
+            }
 
+            $this->attributes['fieldsets'][$f->getId()] = $f;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Obtiene un fieldset por su id
+     * @param type $id
+     * @return null | FieldSetUI
+     */
+    public function getFieldsetById($id)
+    {
+        $ret = null;
+        if(isset($this->attributes['fieldsets'][$id])){
+            $ret = $this->attributes['fieldsets'][$id];
+        }
+        
+        return $ret;
+    }
+
+    /**
+     * Renderiza el formulario completo (fieldsets y campos)
+     * @return string
+     */
     public function render()
     {
         $ret = "<form {$this->renderAttributes()}>\n";
@@ -182,6 +301,10 @@ abstract class FormBase
         return $ret;
     }
 
+    /**
+     * 
+     * @return string
+     */
     protected function renderAttributes()
     {
         $ret = [];
@@ -194,6 +317,10 @@ abstract class FormBase
         return implode(" ", $ret);
     }
 
+    /**
+     * 
+     * @return string
+     */
     protected function renderFieldSets()
     {
         $ret = "";
@@ -209,6 +336,10 @@ abstract class FormBase
         return $ret;
     }
 
+    /**
+     * 
+     * @return string
+     */
     protected function renderFields()
     {
         $ret = "";
@@ -233,6 +364,10 @@ abstract class FormBase
         return $this->render();
     }
 
+    /**
+     * Retorna el formulario convertido a json
+     * @return json
+     */
     public function toJson()
     {
         $paramList = [];
@@ -261,6 +396,10 @@ abstract class FormBase
         return json_encode($paramList);
     }
 
+    /**
+     * Retorna el formulario convertido en array
+     * @return array
+     */
     public function toArray(): array {
         return json_decode($this->toJson(), true);
     }
@@ -360,44 +499,6 @@ abstract class FormBase
         return $this;
     }
 
-    public function setFieldsets(array $fieldsets)
-    {
-        foreach ($fieldsets as $key => $fieldSet){
-            if($fieldSet instanceof FieldSetUI){
-                $f = $fieldSet;
-            } else {
-                $f = new FieldSet($fieldSet);
-                $f->setId('fielset_' . $key);
-            }
-
-            $this->attributes['fieldsets'][] = $f;
-        }
-
-        return $this;
-    }
-
-    /**
-     * Crea objetos de tipo FieldUI a partir de un nombre y los añade a la lista
-     * de campos
-     * @param array $fields
-     * @return $this
-     */
-    public function setFields(array $fields)
-    {
-
-        foreach ($fields as $key => $field){
-            if($field instanceof FieldUI){
-                $f = $field;
-            } else {
-                $f = new Field($key, $field);
-            }
-
-            $this->attributes['fields'][] = $f;
-        }
-
-        return $this;
-    }
-
     public function setAutocomplete($autocomplete)
     {
         $this->attributes['autocomplete'] = $autocomplete;
@@ -430,15 +531,10 @@ abstract class FormBase
 
     public function setMethod($method)
     {
-        $method = strtolower($method);
-        $validMethod = isset(self::METHOD_LIST[$method]) ? $method : 'post';
+        $method = strtolower(trim($method));
+        $validMethod = in_array($method, self::METHOD_LIST) ? $method : self::METHOD_POST;
         $this->attributes['method'] = $validMethod;
         return $this;
-    }
-    
-    public function createFromObj($model)
-    {
-        $fields = 54;
     }
     
     public function getErrors()

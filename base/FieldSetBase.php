@@ -28,18 +28,20 @@ abstract class FieldSetBase
     protected $readOnly = false;
     protected $showFieldLabel = false;
     protected $showFieldBootstrap = false;
+    protected static $id = 1;
 
     public function __construct($legend = "", $fields = [])
     {
         $this->setLegend($legend);
         $this->setFields($fields);
+        $this->setId("fieldset_" . self::$id++);
     }
     
     /**
      * Obtiene el valor del atributo solicitado (si existe dicho atributo)
      * 
      * @param string $attrName
-     * @return string
+     * @return string|null
      */
     public function get(string $attrName)
     {
@@ -184,16 +186,23 @@ abstract class FieldSetBase
         return $this;
     }
 
+    /**
+     * Puede recivir un array con el par clave-valor para crear y añadir campos
+     * a partir de este, o puede recivir un array de objetos de tipo FieldUI y
+     * los añade a la lista de campos
+     * @param array $fields
+     * @return $this
+     */
     public function setFields(array $fields)
     {
-        foreach ($fields as $key => $field){
-            if($field instanceof FieldUI){
-                $f = $field;
+        foreach ($fields as $name => $value){
+            if($value instanceof FieldUI){
+                $f = $value;
             } else {
-                $f = new Field($key, $field);
+                $f = new Field($name, $value);
             }
-            
-            $this->attributes['fields'][] = $f;
+
+            $this->attributes['fields'][$f->getName()] = $f;
         }
         
         return $this;
