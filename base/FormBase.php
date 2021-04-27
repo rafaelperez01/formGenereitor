@@ -349,10 +349,6 @@ abstract class FormBase
         $ret = "";
         if(!empty($this->getFields())){
             
-            $fields = $this->getFields();
-            $firstField = reset($fields);
-            $firstField->setAutofocus();
-            
             foreach($this->getFields() as $field){
                 if($this->readOnly){
                     $field->setReadOnly();

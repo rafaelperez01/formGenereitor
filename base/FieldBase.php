@@ -72,6 +72,7 @@ abstract class FieldBase
         $this->setType($type);
         $this->setPlaceholder($name);
         $this->setTitle($name);
+        if(1 == self::$id) { $this->setAutofocus(); }
         $this->setId('field_' . self::$id++);
         $this->setLabelFor($name);
         $this->showBootstrap($showBootstrap);
