@@ -14,7 +14,7 @@
 namespace formGenereitor\base;
 
 use formGenereitor\Field;
-use formGenereitor\ui\FieldUI;
+use formGenereitor\ui\{FieldUI, FormUI};
 
 /**
  * Description of FieldSetBase
@@ -28,6 +28,7 @@ abstract class FieldSetBase
     protected $readOnly = false;
     protected $showFieldLabel = false;
     protected $showFieldBootstrap = false;
+    protected $form = null;
     protected static $id = 1;
 
     public function __construct($legend = "", $fields = [])
@@ -78,6 +79,27 @@ abstract class FieldSetBase
         return implode(" ", $ret);
     }
     
+    /**
+     * 
+     * @return FormUI|null
+     */
+    public function getForm()
+    {
+        return $this->form;
+    }
+
+
+    /**
+     * 
+     * @param FormUI $form
+     * @return $this
+     */
+    public function setForm(FormUI $form)
+    {
+        $this->form = $form;
+        return $this;
+    }
+    
     public function render()
     {
         $ret = "<fieldset {$this->renderAttributes()}>\n";
@@ -85,7 +107,8 @@ abstract class FieldSetBase
             $ret .= "\t<legend>{$this->getLegend()}</legend>\n";
         }
         
-        $firstField = reset($this->getFields());
+        $fields = $this->getFields();
+        $firstField = reset($fields);
         $firstField->setAutofocus();
         
         foreach ($this->getFields() as $key => $field){

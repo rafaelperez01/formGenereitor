@@ -165,6 +165,7 @@ abstract class FormBase
      */
     public function addField(FieldUI $field)
     {
+        $field->setForm($this);
         $this->attributes['fields'][$field->getName()] = $field;
         return $this;
     }
@@ -202,6 +203,7 @@ abstract class FormBase
                 $f = new Field($name, $value);
             }
 
+            $f->setForm($this);
             $this->attributes['fields'][$f->getName()] = $f;
         }
 
@@ -230,6 +232,7 @@ abstract class FormBase
      */
     public function addFieldset(FieldSetUI $fieldset)
     {
+        $fieldset->setForm($this);
         $this->attributes['fieldsets'][$fieldset->getId()] = $fieldset;
         return $this;
     }
@@ -265,7 +268,8 @@ abstract class FormBase
             } else {
                 $f = new FieldSet($fieldSet);
             }
-
+            
+            $f->setForm($this);
             $this->attributes['fieldsets'][$f->getId()] = $f;
         }
 
@@ -345,7 +349,8 @@ abstract class FormBase
         $ret = "";
         if(!empty($this->getFields())){
             
-            $firstField = reset($this->getFields());
+            $fields = $this->getFields();
+            $firstField = reset($fields);
             $firstField->setAutofocus();
             
             foreach($this->getFields() as $field){

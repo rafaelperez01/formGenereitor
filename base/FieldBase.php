@@ -25,6 +25,8 @@
 
 namespace formGenereitor\base;
 
+use formGenereitor\ui\FormUI;
+
 /**
  * Description of FieldBase
  *
@@ -768,7 +770,12 @@ abstract class FieldBase
         return $this;
     }
 
-    public function setFormTarget($form)
+    /**
+     * 
+     * @param string $form
+     * @return $this
+     */
+    public function setFormTarget(string $form)
     {
         $this->attributes['form'] = $form;
         return $this;
@@ -905,12 +912,16 @@ abstract class FieldBase
         $this->constraint = $constraint;
     }
     
+    /**
+     * 
+     * @return FormUI|null
+     */
     public function getForm()
     {
         return $this->form;
     }
     
-    public function setForm($form)
+    public function setForm(FormUI $form)
     {
         if(!is_null($form)){
             $this->form = $form;

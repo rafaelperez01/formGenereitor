@@ -13,6 +13,8 @@
 
 namespace formGenereitor\ui;
 
+use formGenereitor\ui\{FieldUI, FormUI};
+
 /**
  *
  * @author Rafael Pérez.
@@ -27,7 +29,7 @@ interface FieldSetUI
     
     public function addField($name, $value = "", $type = "");
     
-    public function addFieldObj(\formGenereitor\ui\FieldUI $field);
+    public function addFieldObj(FieldUI $field);
     
     public function toJson();
     
@@ -62,4 +64,6 @@ interface FieldSetUI
     public function showFieldLabel($show = true);
 
     public function showFieldBootstrap($show = true);
+    
+    public function setForm(FormUI $form);
 }

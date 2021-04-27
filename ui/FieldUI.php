@@ -144,7 +144,7 @@ interface FieldUI
     
     public function setRequired($required);
 
-    public function setForm($form);
+    public function setForm(FormUI $form);
 
     public function setMaxlength($maxlength);
 
