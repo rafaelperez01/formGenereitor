@@ -26,7 +26,7 @@ abstract class FieldSetBase
     protected $attributes = ['id' => '', 'class' => '', 'style' => '', 'fields' => [],];
     protected $legend = "";
     protected $readOnly = false;
-    protected $showFieldLabel = false;
+    protected $showFieldLabel = true;
     protected $showFieldBootstrap = false;
     protected $form = null;
     protected static $id = 1;
@@ -129,13 +129,13 @@ abstract class FieldSetBase
     public function addField($name, $value = "", $type = "")
     {
         $f = new Field($name, $value, $type);
-        $this->attributes['fields'][] = $f;
+        $this->attributes['fields'][$f->getName()] = $f;
         return $this;
     }
     
     public function addFieldObj(FieldUI $field)
     {
-        $this->attributes['fields'][] = $field;
+        $this->attributes['fields'][$field->getName()] = $field;
         return $this;
     }
     

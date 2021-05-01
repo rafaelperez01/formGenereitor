@@ -63,7 +63,14 @@ abstract class FieldBase
     
     protected static $id = 1;
     
-    protected $constraint;
+    protected $constraintAttributes = ['required' => '', 'maxlength' => '', 'minlength' => '', 'max' => '', 'min' => '', 'size' => '', 'pattern' => '',];
+    protected $errors = [];
+    protected $renderErrors = "";
+
+    const RULE_REQUIRED = 'required';
+    const RULE_EMAIL = 'email';
+    const RULE_MIN = 'min';
+    const RULE_MAX = 'max';
 
     public function __construct(string $name, $value = null, string $type = 'text', $showBootstrap = false)
     {
@@ -148,6 +155,8 @@ abstract class FieldBase
             default: $ret .= $this->renderDefault();
                 break;
         }
+        
+        $ret .= $this->renderErrors;
         
         return $ret;
     }
@@ -773,12 +782,12 @@ abstract class FieldBase
 
     /**
      * 
-     * @param string $form
+     * @param string $formId
      * @return $this
      */
-    public function setFormTarget(string $form)
+    public function setFormTarget(string $formId)
     {
-        $this->attributes['form'] = $form;
+        $this->attributes['form'] = $formId;
         return $this;
     }
 
@@ -929,5 +938,71 @@ abstract class FieldBase
         }
         
         return $this;
+    }
+    
+    protected function typeValidate()
+    {
+        switch ($this->getType()){
+            case 'number':
+                if("" != $this->getValue() and !is_numeric($this->getValue())){
+                    $this->errors[] = 'El valor tiene que ser un número';
+                }
+                break;
+        }
+    }
+    
+    protected function attributeValidate()
+    {
+        $Attributes = $this->getAttributes();
+        foreach ($Attributes as $attribute => $attrValue){
+            if("" != $attrValue and !is_array($attrValue)){
+                switch ($attribute){
+                    case 'required':
+                        if("" == $this->getValue()){
+                            $this->errors[] = "&Eacute;ste campo es obligatorio";
+                        }
+                        break;
+                        
+                    case 'min':
+                        if(($this->getValue() < $attrValue)){
+                            $this->errors[] = "El valor tiene que ser mayor o igual que {$attrValue}";
+                        }
+                        break;
+                    
+                    case 'max':
+                        if(($this->getValue() > $attrValue)){
+                            $this->errors[] = "El valor tiene que ser menor o igual que {$attrValue}";
+                        }
+                        break;
+                        
+                    case 'minlength':
+                        if(strlen($this->getValue()) < $attrValue){
+                            $this->errors[] = "El valor debe de superar los {$attrValue} caracteres";
+                        }
+                        break;
+                        
+                    case 'maxlength':
+                        if(strlen($this->getValue()) > $attrValue){
+                            $this->errors[] = "El valor NO debe de superar los {$attrValue} caracteres";
+                        }
+                        break;
+                }
+            }
+        }
+    }
+    
+    public function validate()
+    {
+        $this->typeValidate();
+        $this->attributeValidate();
+        $ret = true;
+        if(!empty($this->errors)){
+            $ret = false;
+            foreach($this->errors as $errorMsj){
+                $this->renderErrors .= "\t<p style='color:red';><small>{$errorMsj}</small></p>\n";
+            }
+        }
+        
+        return $ret;
     }
 }

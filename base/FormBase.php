@@ -51,7 +51,9 @@ abstract class FormBase
         $this->setFields($fiels);
         $this->setAction($action);
         $this->setMethod($method);
-        $this->setId('form_' . self::$id++);
+        $formId = 'form_' . self::$id++;
+        $this->setId($formId);
+        $this->setName($formId);
     }
 
     public function setReadOnly($readOnly)
@@ -404,6 +406,34 @@ abstract class FormBase
     public function toArray(): array {
         return json_decode($this->toJson(), true);
     }
+    
+    public function start()
+    {
+        $atributesPrint = [];
+        foreach ($this->attributes as $attribute => $value){
+            if("" != $value and !is_array($value)){
+                $atributesPrint[] = "$attribute='$value'";
+            }
+        }
+        
+        $ret = "<form ". implode(" ", $atributesPrint) .">\n";
+        
+        return $ret;
+    }
+    
+    public function end()
+    {       
+        $ret = "</form>\n";
+        return $ret;
+    }
+    
+    public function createField($name, $value = '')
+    {
+        $field = new Field($name, $value);
+        $this->addField($field);
+        $field->setForm($this);
+        return $field;
+    }
 
     public function getId()
     {
@@ -545,6 +575,51 @@ abstract class FormBase
     
     public function validate()
     {
-        return empty($this->getErrors());
+        $ret = true;
+        foreach ($this->getFields() as $field){
+            $ret *= $field->validate();
+        }
+        
+        return $ret;
+    }
+    
+    /**
+     * Rellega los valores de los campos con datos que llegan desde la request
+     * @return $this
+     */
+    public function loadDataFromRequest()
+    {
+        switch ($this->getMethod()){
+            case 'get':
+                $this->loadDataFromGet();
+                break;
+            case 'post':
+                $this->loadDataFromPost();
+                break;
+        }
+        
+        return $this;
+    }
+    
+    protected function loadDataFromGet()
+    {
+        foreach ($this->getFields() as $field){
+            if($value = @$_GET[$field->getName()]){
+                $field->setValue($value);
+            }
+        }
+        
+        return $this;
+    }
+    
+    protected function loadDataFromPost()
+    {
+        foreach ($this->getFields() as $field){
+            if($value = @$_POST[$field->getName()]){
+                $field->setValue($value);
+            }
+        }
+        
+        return $this;
     }
 }
