@@ -129,13 +129,13 @@ abstract class FieldSetBase
     public function addField($name, $value = "", $type = "")
     {
         $f = new Field($name, $value, $type);
-        $this->attributes['fields'][$f->getName()] = $f;
+        $this->attributes['fields'][$f->getId()] = $f;
         return $this;
     }
     
     public function addFieldObj(FieldUI $field)
     {
-        $this->attributes['fields'][$field->getName()] = $field;
+        $this->attributes['fields'][$field->getId()] = $field;
         return $this;
     }
     
@@ -221,7 +221,7 @@ abstract class FieldSetBase
                 $f = new Field($name, $value);
             }
 
-            $this->attributes['fields'][$f->getName()] = $f;
+            $this->attributes['fields'][$f->getId()] = $f;
         }
         
         return $this;

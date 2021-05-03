@@ -64,14 +64,14 @@ abstract class FormBase
     
     /**
      * Configura una lista de campos como campos de sólo lectura
-     * @param array $fieldList
+     * @param array $fieldIdList
      * @return $this
      */
-    public function setFieldsAsReadOnly(array $fieldList)
+    public function setFieldsAsReadOnly(array $fieldIdList)
     {
-        if(!empty($fieldList)){
-            foreach ($fieldList as $field){                
-                if($f = $this->getFieldByName($field)){                    
+        if(!empty($fieldIdList)){
+            foreach ($fieldIdList as $id){
+                if($f = $this->getFieldById($id)){
                     $f->setReadonly();
                 }
             }
@@ -82,14 +82,14 @@ abstract class FormBase
     
     /**
      * Configura una lista de campos como campos desabilitados
-     * @param array $fieldList
+     * @param array $fieldIdList
      * @return $this
      */
-    public function setFieldsAsDisableds(array $fieldList)
+    public function setFieldsAsDisableds(array $fieldIdList)
     {
-        if(!empty($fieldList)){
-            foreach ($fieldList as $field){                
-                if($f = $this->getFieldByName($field)){                    
+        if(!empty($fieldIdList)){
+            foreach ($fieldIdList as $id){
+                if($f = $this->getFieldById($id)){
                     $f->setDisabled();
                 }
             }
@@ -100,14 +100,14 @@ abstract class FormBase
     
     /**
      * Configura una lista de campos como campos ocultos
-     * @param array $fieldList
+     * @param array $fieldIdList
      * @return $this
      */
-    public function setFieldsAsHidden(array $fieldList)
+    public function setFieldsAsHidden(array $fieldIdList)
     {
-        if(!empty($fieldList)){
-            foreach ($fieldList as $field){                
-                if($f = $this->getFieldByName($field)){                    
+        if(!empty($fieldIdList)){
+            foreach ($fieldIdList as $id){
+                if($f = $this->getFieldById($id)){
                     $f->setType('hidden')->showLabel(false);
                 }
             }
@@ -118,14 +118,14 @@ abstract class FormBase
     
     /**
      * Configura una lista de campos como campos de tipo textArea
-     * @param array $fieldList
+     * @param array $fieldIdList
      * @return $this
      */
-    public function setFieldsAsTextArea(array $fieldList)
+    public function setFieldsAsTextArea(array $fieldIdList)
     {
-        if(!empty($fieldList)){
-            foreach ($fieldList as $field){                
-                if($f = $this->getFieldByName($field)){                    
+        if(!empty($fieldIdList)){
+            foreach ($fieldIdList as $id){
+                if($f = $this->getFieldById($id)){
                     $f->setType('textarea');
                 }
             }
@@ -136,13 +136,13 @@ abstract class FormBase
     
     /**
      * Configura las opciones para un campo (select, list, optgroup) 
-     * @param type $fieldName
+     * @param string $fieldId
      * @param array $options
      * @return $this
      */
-    public function setFieldOptions($fieldName, array $options)
+    public function setFieldOptions($fieldId, array $options)
     {
-        if($f = $this->getFieldByName($fieldName) and !empty($options)){
+        if($f = $this->getFieldById($fieldId) and !empty($options)){
             $f->setOptions($options);
         }
         
@@ -174,7 +174,7 @@ abstract class FormBase
     public function addField(FieldUI $field)
     {
         $field->setForm($this);
-        $this->attributes['fields'][$field->getName()] = $field;
+        $this->attributes['fields'][$field->getId()] = $field;
         return $this;
     }
     
@@ -212,22 +212,22 @@ abstract class FormBase
             }
 
             $f->setForm($this);
-            $this->attributes['fields'][$f->getName()] = $f;
+            $this->attributes['fields'][$f->getId()] = $f;
         }
 
         return $this;
     }
     
     /**
-     * Obtiene un campo por su nombre
-     * @param string $name
+     * Obtiene un campo por su id
+     * @param string $id
      * @return FieldUI
      */
-    public function getFieldByName($name)
+    public function getFieldById($id)
     {
         $ret = null;
-        if(isset($this->attributes['fields'][$name])){
-            $ret = $this->attributes['fields'][$name];
+        if(isset($this->attributes['fields'][$id])){
+            $ret = $this->attributes['fields'][$id];
         }
         
         return $ret;

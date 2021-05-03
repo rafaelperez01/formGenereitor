@@ -44,7 +44,7 @@ interface FormUI
     
     public function addField(FieldUI $field);
     
-    public function getFieldByName($name);
+    public function getFieldById($id);
 
     public function getAutocomplete();
 

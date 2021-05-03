@@ -194,7 +194,7 @@ abstract class FieldBase
         $ret = [];
         $attrList = $this->getAttributes();
         foreach (self::ALLOWED_ATTRIBUTER_FOR_TEXTAREA as $attr){
-            $attrValue = $attrList[$attr];
+            $attrValue = @$attrList[$attr];
             if(!is_null($attrValue)){
                 $ret[$attr] = $attrValue;
             }
@@ -229,14 +229,16 @@ abstract class FieldBase
         }
         
         $attr = $this->renderAttributes();
-        $ret .= "\t<input {$attr}/><br>\n";
+        $ret .= "\t<input {$attr}/>" . PHP_EOL;
         $ret .= $this->renderErrors;
         
         if($this->showBootstrap){
             $hasError = !empty($this->errors) ? " has-error" : "";
-            $ret = "<div class='form-group$hasError'>\n{$ret}</div>\n";
+            $ret = "<div class='form-group$hasError'>\n{$ret}</div>" . PHP_EOL;
+        } elseif(empty($this->errors)) {
+            $ret .= "\t<br>" . PHP_EOL;
         }
-        
+
         return $ret;
     }
     
@@ -247,18 +249,18 @@ abstract class FieldBase
         }
         
         $attr = $this->renderAttributes();
-        $ret = "\t<input {$attr}/>\n";
+        $ret = "\t<input {$attr}/>" . PHP_EOL;
         if($this->showLabel){
             $attr = $this->renderLabelAttibutes();
             $label = "\t<label {$attr}>";
             $label .= $ret;
             $label .= $this->getLabel();
-            $label .= "</label><br>\n";
+            $label .= "</label><br>" . PHP_EOL;
             $ret = $label;
         }
         
         if($this->showBootstrap){
-            $ret = "<div class='radio'>\n{$ret}</div>\n";
+            $ret = "<div class='radio'>\n{$ret}</div>" . PHP_EOL;
         }
         
         return $ret;
@@ -271,18 +273,18 @@ abstract class FieldBase
         }
         
         $attr = $this->renderAttributes();
-        $ret = "\t<input {$attr}/>\n";
+        $ret = "\t<input {$attr}/>" . PHP_EOL;
         if($this->showLabel){
             $attr = $this->renderLabelAttibutes();
-            $label = "\t<label {$attr}>\n";
+            $label = "\t<label {$attr}>" . PHP_EOL;
             $label .= $ret;
-            $label .= $this->getLabel() . "\n";
-            $label .= "</label><br>\n";
+            $label .= $this->getLabel() . "" . PHP_EOL;
+            $label .= "</label><br>" . PHP_EOL;
             $ret = $label;
         }
         
         if($this->showBootstrap){
-            $ret = "<div class='checkbox'>\n{$ret}</div>\n";
+            $ret = "<div class='checkbox'>\n{$ret}</div>" . PHP_EOL;
         }
         
         return $ret;
@@ -296,7 +298,12 @@ abstract class FieldBase
             $this->setClass($class);
         }
         $attr = $this->renderAttributes();
-        $ret = "\t<br><input {$attr}/><br>\n";
+        $ret = "\t<input {$attr}/><br>" . PHP_EOL;
+
+        if (!$this->showBootstrap) {
+            $ret = "\t<br>{$ret}" . PHP_EOL;
+        }
+
         return $ret;
     }
 
@@ -313,14 +320,16 @@ abstract class FieldBase
         }
         
         $attr = $this->renderAttributes();
-        $ret .= "\t<select {$attr}>\n";
+        $ret .= "\t<select {$attr}>" . PHP_EOL;
         $ret .= $this->renderOptions();
-        $ret .= "\t</select><br>\n";
+        $ret .= "\t</select>" . PHP_EOL;
         $ret .= $this->renderErrors;
         
         if($this->showBootstrap){
             $hasError = !empty($this->errors) ? " has-error" : "";
-            $ret = "<div class='form-group$hasError'>\n{$ret}</div>\n";
+            $ret = "<div class='form-group$hasError'>\n{$ret}</div>" . PHP_EOL;
+        } elseif(empty($this->errors)) {
+            $ret .= "\t<br>" . PHP_EOL;
         }
         
         return $ret;
@@ -334,7 +343,7 @@ abstract class FieldBase
         if(is_array($options)){
             foreach ($options as $value => $label){
                 $selected = $optionSelected === $value ? "selected" : '';
-                $ret .= "\t\t<option value='{$value}' {$selected}>{$label}</option>\n";
+                $ret .= "\t\t<option value='{$value}' {$selected}>{$label}</option>" . PHP_EOL;
             }
         }
         
@@ -354,12 +363,14 @@ abstract class FieldBase
         
         $ret .= "\t<textarea " . $this->renderAttributes() . ">";
         $ret .= $this->getValue();
-        $ret .= "</textarea><br>\n";
+        $ret .= "</textarea>" . PHP_EOL;
         $ret .= $this->renderErrors;
         
         if($this->showBootstrap){
             $hasError = !empty($this->errors) ? " has-error" : "";
-            $ret = "<div class='form-group$hasError'>\n{$ret}</div>\n";
+            $ret = "<div class='form-group$hasError'>\n{$ret}</div>" . PHP_EOL;
+        } elseif(empty($this->errors)) {
+            $ret .= "\t<br>" . PHP_EOL;
         }
         
         return $ret;
@@ -381,12 +392,12 @@ abstract class FieldBase
             $this->setClassBootstrap();
         }
         
-        $ret .= "\t<input " . $this->renderAttributes() . "/><br>\n";
+        $ret .= "\t<input " . $this->renderAttributes() . "/><br>" . PHP_EOL;
         $ret .= $this->renderErrors;
         
         if($this->showBootstrap){
             $hasError = !empty($this->errors) ? " has-error" : "";
-            $ret = "<div class='form-group$hasError'>\n{$ret}</div>\n";
+            $ret = "<div class='form-group$hasError'>\n{$ret}</div>" . PHP_EOL;
         }
         
         return $ret;
@@ -450,7 +461,7 @@ abstract class FieldBase
         $attr = $this->renderLabelAttibutes();
         $ret = "\t<label {$attr}>";
         $ret .= $this->getLabel();
-        $ret .= "</label><br>\n";
+        $ret .= "</label><br>" . PHP_EOL;
 
         return $ret;      
     }
@@ -493,7 +504,7 @@ abstract class FieldBase
     
     public function getLabelId()
     {
-        return $this->labelAttributes['id'];
+        return @$this->labelAttributes['id'];
     }
     
     public function setLabelId(string $id)
@@ -505,7 +516,7 @@ abstract class FieldBase
     
     public function getLabelFor()
     {
-        return $this->labelAttributes['for'];
+        return @$this->labelAttributes['for'];
     }
     
     public function setLabelFor(string $for)
@@ -517,7 +528,7 @@ abstract class FieldBase
     
     public function getLabelClass()
     {
-        return $this->labelAttributes['class'];
+        return @$this->labelAttributes['class'];
     }
     
     public function setLabelClass(string $class)
@@ -528,7 +539,7 @@ abstract class FieldBase
     
     public function getLabelForm()
     {
-        return $this->labelAttributes['form'];
+        return @$this->labelAttributes['form'];
     }
     
     public function setLabelForm(string $form)
@@ -539,7 +550,7 @@ abstract class FieldBase
 
     public function getLabelAccesskey()
     {
-        return $this->labelAttributes['accesskey'];
+        return @$this->labelAttributes['accesskey'];
     }
     
     public function setLabelAccesskey(string $accesskey)
@@ -993,13 +1004,13 @@ abstract class FieldBase
                     and !is_string($this->getValue())
                     or is_numeric($this->getValue())
                 ){
-                    $this->errors[] = 'El valor tiene que ser un texto válido';
+                    $this->errors[] = 'Texto no válido';
                 }
                 break;
                 
             case 'number':
                 if("" != $this->getValue() and !is_numeric($this->getValue())){
-                    $this->errors[] = 'El valor tiene que ser un número válido';
+                    $this->errors[] = 'Número no válido';
                 }
                 break;
             
@@ -1008,7 +1019,7 @@ abstract class FieldBase
                     "" != $this->getValue() 
                     and !filter_var($this->getValue(), FILTER_VALIDATE_EMAIL)
                 ){
-                    $this->errors[] = 'El valor tiene que ser un email válido';
+                    $this->errors[] = 'Email no válido';
                 }
                 break;
         }
@@ -1022,37 +1033,37 @@ abstract class FieldBase
                 switch ($attribute){
                     case 'required':
                         if("" == $this->getValue()){
-                            $this->errors[] = "&Eacute;ste campo es obligatorio";
+                            $this->errors[] = "Campo obligatorio";
                         }
                         break;
                         
                     case 'min':
                         if(($this->getValue() < $attrValue)){
-                            $this->errors[] = "El valor tiene que ser mayor o igual que {$attrValue}";
+                            $this->errors[] = "El valor debe ser mayor o igual que {$attrValue}";
                         }
                         break;
                     
                     case 'max':
                         if(($this->getValue() > $attrValue)){
-                            $this->errors[] = "El valor tiene que ser menor o igual que {$attrValue}";
+                            $this->errors[] = "El valor debe ser menor o igual que {$attrValue}";
                         }
                         break;
                         
                     case 'minlength':
                         if(strlen($this->getValue()) < $attrValue){
-                            $this->errors[] = "El valor debe de superar los {$attrValue} caracteres";
+                            $this->errors[] = "No supera los {$attrValue} caracteres";
                         }
                         break;
                         
                     case 'maxlength':
                         if(strlen($this->getValue()) > $attrValue){
-                            $this->errors[] = "El valor NO debe de superar los {$attrValue} caracteres";
+                            $this->errors[] = "Superar los {$attrValue} caracteres";
                         }
                         break;
                         
                     case 'pattern':
                         if(!preg_match("/" . $attrValue . "/", $this->getValue())){
-                            $this->errors[] = "El valor NO coincide con el patrón {$attrValue}";
+                            $this->errors[] = "NO sigue el patrón {$attrValue}";
                         }
                         break;
                 }
@@ -1068,7 +1079,7 @@ abstract class FieldBase
         if(!empty($this->errors)){
             $ret = false;
             foreach($this->errors as $errorMsj){
-                $this->renderErrors .= "\t<span class='help-block' style='color:#ff0000'>{$errorMsj}</span>\n";
+                $this->renderErrors .= "\t<span class='help-block' style='color:#ff0000'>{$errorMsj}</span>" . PHP_EOL;
             }
         }
         
