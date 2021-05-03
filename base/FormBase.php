@@ -30,7 +30,7 @@ abstract class FormBase
     protected $attributes = ['id' => '', 'class' => '', 'action' => '', 'method' => '', 'name' => '', 'caption' => '', 'fieldsets' => [], 'fields' => [], 'autocomplete' => '', 'novalidate' => '', 'enctype' => '', 'target' => '', 'accept' => 'image/*,.pdf', 'enctype' => 'multipart/form-data'];
     protected $errors = [];
     
-    public $showBootstrap = false;
+    protected $showBootstrap = false;
 
     const METHOD_GET = 'get';
     const METHOD_POST = 'post';
@@ -158,8 +158,14 @@ abstract class FormBase
     {
         $this->showBootstrap = true === $show;
         return $this;
-    }   
+    }
     
+    public function getShowBootstrap()
+    {
+        return $this->showBootstrap;
+    }
+
+
     /**
      * Añade o sustituye un campo en la lista de campos
      * @param FieldUI $field
@@ -407,6 +413,10 @@ abstract class FormBase
         return json_decode($this->toJson(), true);
     }
     
+    /**
+     * 
+     * @return string
+     */
     public function start()
     {
         $atributesPrint = [];
@@ -421,12 +431,22 @@ abstract class FormBase
         return $ret;
     }
     
+    /**
+     * 
+     * @return string
+     */
     public function end()
     {       
         $ret = "</form>\n";
         return $ret;
     }
     
+    /**
+     * 
+     * @param type $name
+     * @param type $value
+     * @return Field
+     */
     public function createField($name, $value = '')
     {
         $field = new Field($name, $value);
@@ -568,15 +588,16 @@ abstract class FormBase
         return $this;
     }
     
-    public function getErrors()
-    {
-        return $this->errors;
-    }
-    
+    /**
+     * Valida si los valores de los campos son correctos (tipo, longitud y formato)
+     * @return boolean
+     */
     public function validate()
     {
         $ret = true;
+        $this->loadDataFromRequest();
         foreach ($this->getFields() as $field){
+            /** @var FieldBase $field  */
             $ret *= $field->validate();
         }
         
@@ -584,7 +605,7 @@ abstract class FormBase
     }
     
     /**
-     * Rellega los valores de los campos con datos que llegan desde la request
+     * Rellena los valores de los campos con los datos que llegan desde los metodos post y get
      * @return $this
      */
     public function loadDataFromRequest()
@@ -604,7 +625,7 @@ abstract class FormBase
     protected function loadDataFromGet()
     {
         foreach ($this->getFields() as $field){
-            if($value = @$_GET[$field->getName()]){
+            if($value = filter_input(INPUT_GET, $field->getName())){
                 $field->setValue($value);
             }
         }
@@ -615,7 +636,11 @@ abstract class FormBase
     protected function loadDataFromPost()
     {
         foreach ($this->getFields() as $field){
-            if($value = @$_POST[$field->getName()]){
+            /**
+             * @var FieldBase $field
+             */
+            if(isset($_POST[$field->getName()])){
+                $value = filter_input(INPUT_POST, $field->getName());
                 $field->setValue($value);
             }
         }
