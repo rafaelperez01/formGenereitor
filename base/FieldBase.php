@@ -50,11 +50,11 @@ abstract class FieldBase
     
     // Options for field type select
     protected $selectOptions = [];
-    const ALLOWED_ATTRIBUTES_FOR_SELECT = ['name', 'id', 'class', 'required', 'readonly', 'form', 'disabled'];
+    const ALLOWED_ATTRIBUTES_FOR_SELECT = ['name', 'id', 'class', 'required', 'readonly', 'form', 'disabled', 'style',];
     protected $optionSelected = '';
     
     // Options for field type textarea
-    const ALLOWED_ATTRIBUTER_FOR_TEXTAREA = ['name', 'id', 'cols', 'rows', 'class', 'maxlength', 'placeholder', 'required', 'wrap', 'readonly', 'form', 'disabled', 'title',];
+    const ALLOWED_ATTRIBUTER_FOR_TEXTAREA = ['name', 'id', 'cols', 'rows', 'class', 'maxlength', 'placeholder', 'required', 'wrap', 'readonly', 'form', 'disabled', 'title', 'style',];
 
     protected $showBootstrap = false;
     
@@ -65,7 +65,14 @@ abstract class FieldBase
     protected $errors = [];
     protected $renderErrors = "";
 
-    public function __construct(string $name, $value = null, string $type = 'text', $showBootstrap = false)
+    /**
+     * FieldBase constructor.
+     * @param string $name
+     * @param null $value
+     * @param string $type
+     * @param bool $showBootstrap
+     */
+    public function __construct(string $name, $value = null, string $type = 'text', bool $showBootstrap = false)
     {
         //TODO: pensar en hacer un switch case para que dependiendo del tipo de campo, se seteen algunos valores
         $this->setName($name);
@@ -91,11 +98,10 @@ abstract class FieldBase
         $attrName = strtolower($attrName);
         return @$this->getAttributes()[$attrName];
     }
-    
+
     /**
-     * 
      * @param string $attrName
-     * @param type $value
+     * @param $value
      * @return $this
      */
     public function set(string $attrName, $value)
@@ -294,7 +300,7 @@ abstract class FieldBase
             $this->setClass($class);
         }
         $attr = $this->renderAttributes();
-        $ret = "\t<input {$attr}/><br>" . PHP_EOL;
+        $ret = "<input {$attr}/><br>" . PHP_EOL;
 
         if (!$this->showBootstrap) {
             $ret = "\t<br>{$ret}" . PHP_EOL;
@@ -1035,7 +1041,9 @@ abstract class FieldBase
             if("" != $attrValue and !is_array($attrValue)){
                 switch ($attribute){
                     case 'required':
-                        if("" == $this->getValue() or !$this->getChecked()){
+                        if('radio' == $this->getType() and !$this->getChecked()){
+                            $this->errors[] = "Campo obligatorio";
+                        } elseif ("" == $this->getValue()){
                             $this->errors[] = "Campo obligatorio";
                         }
                         break;

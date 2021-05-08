@@ -1,3 +1,31 @@
+<?php
+require_once 'Field.php';
+require_once 'Fieldset.php';
+require_once 'Form.php';
+
+use formGenereitor\{Field, Fieldset, Form};
+
+$showBootstrap = (bool) isset($_GET['showBootstrap']) ? !$_GET['showBootstrap'] : 0;
+$form = new Form();
+$form->showBootstrap($showBootstrap);
+$nombre = $form->createField('Nombre')->setRequired();
+$apellidos = $form->createField('Apellidos');
+$email = $form->createField('Email')->setType('email');
+$telefono = $form->createField('Telefono')->setType('number');
+$sexoH = $form->createField('Sexo')->setType('radio')->setLabel('Hombre')->setValue('h')->setRequired();
+$sexoM = $form->createField('Sexo')->setType('radio')->setLabel('Mujer')->setValue('m')->setChecked();
+$aficionCorrer = $form->createField('aficion[]')->setType('checkbox')->setLabel('Correr')->setValue('correr');
+$aficionLeer = $form->createField('aficion[]')->setType('checkbox')->setLabel('Leer')->setValue('leer');
+$aficionCocina = $form->createField('aficion[]')->setType('checkbox')->setLabel('Cocinar')->setValue('cocinar');
+$nacimiento = $form->createField('fechaNacimiento')->setType('date')->setLabel('Fecha de Nacimiento');
+$paisNacimiento = $form->createField('Pais de Nacimiento')->setType('select')->setOptions(['' => '-', 'es' => 'España', 'rd' => 'Rep. Dominicana'])->setRequired();
+$imagen = $form->createField('imagen')->setType('file');
+$direccion = $form->createField('Direccion')->setType('textarea')->setRows(10)->setRequired()->setStyle('resize: none;');
+$enviar = $form->createField('Enviar')->setType('submit')->setClass('btn-success');
+if(isset($_POST['Enviar']) and $form->validate()){
+    var_dump($_POST);
+}
+?>
 <!doctype html>
 <html lang="es">
   <head>
@@ -26,51 +54,34 @@
                 <div class="row">
                     <div class="col-md-12">
                         <h1>Form Genereitor 2.0</h1>
-                        
-                        
-                            <?php                      
-                            require_once 'Field.php';
-                            require_once 'Fieldset.php';
-                            require_once 'Form.php';
-
-                            use formGenereitor\{Field, Fieldset, Form};
-
-                            $form = new Form();
-                            $form->showBootstrap();
-                            ?>
-
-
-                        
-                            <?= $form->start(); ?>
+                        <a href="ejemploBootstrap.php?showBootstrap=<?= $showBootstrap ?>" class="btn btn-warning"><?php echo $showBootstrap ? 'No ' : ''; ?>Mostrar estilo Bootstrap</a>
+                            <?= $form->start(); ?><br>
                             <div class="row">
                                 <div class="col-md-6">
-                                    <?= $form->createField('Nombre'); ?>
-                                    <?= $form->createField('Apellidos'); ?>
-                                    <?= $form->createField('Email'); ?>
-                                    <?= $form->createField('Telefono'); ?>
+                                    <?= $nombre ?>
+                                    <?= $apellidos ?>
+                                    <?= $email ?>
+                                    <?= $telefono ?>
 
                                     <p><strong>Seleccione el Sexo:</strong></p>
-                                        <?= $form->createField('Sexo')->setType('radio')->setLabel('Hombre')->setValue('h')->setId('h'); ?>
-                                        <?= $form->createField('Sexo')->setType('radio')->setLabel('Mujer')->setValue('m')->setId('m')->setChecked(); ?>
+                                        <?= $sexoH ?>
+                                        <?= $sexoM ?>
 
                                     <p><strong>Seleccione aficiones:</strong></p>
-                                        <?= $form->createField('aficion')->setType('checkbox')->setLabel('Correr')->setValue('correr')->setId('correr') ?>
-                                        <?= $form->createField('aficion')->setType('checkbox')->setLabel('Leer')->setValue('leer')->setId('leer') ?>
-                                        <?= $form->createField('aficion')->setType('checkbox')->setLabel('Cocinar')->setValue('cocinar')->setId('cocinar') ?>
+                                        <?= $aficionCorrer ?>
+                                        <?= $aficionLeer ?>
+                                        <?= $aficionCocina ?>
                                 </div>
 
                                 <div class="col-md-6">
-                                    <?= $form->createField('imagen')->setType('file') ?>
-                                    <?= $form->createField('fechaNacimiento')->setType('date')->setLabel('Fecha de Nacimiento'); ?>
-                                    <?= $form->createField('Pais de Nacimiento')->setType('select')->setOptions(['es' => 'España', 'rd' => 'Rep. Dominicana']); ?>
-                                    <?= $form->createField('Direccion')->setType('textarea')->setRows(10); ?>
+                                    <?= $nacimiento ?>
+                                    <?= $paisNacimiento ?>
+                                    <?= $imagen ?>
+                                    <?= $direccion ?>
                                 </div>
                             </div>
-                                <?= $form->createField('Enviar')->setType('submit')->setClass('btn-success'); ?>
-                            
-
+                                <?= $enviar; ?>
                             <?= $form->end(); ?>
-                        
                         
                     </div>
                 </div>

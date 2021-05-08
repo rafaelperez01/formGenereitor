@@ -12,7 +12,6 @@
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-        <li><a href="ejemplo.php">Ejemplo</a></li>
         <li><a href="ejemploBootstrap.php">Ejemplo con Bootstrap</a></li>
         <li><a href="probando.php">Probando</a></li>
       </ul>
