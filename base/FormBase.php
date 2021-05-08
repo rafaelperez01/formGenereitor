@@ -27,8 +27,7 @@ use formGenereitor\ui\FieldUI;
 abstract class FormBase 
 {
     protected $readOnly = false;
-    protected $attributes = ['id' => '', 'class' => '', 'action' => '', 'method' => '', 'name' => '', 'caption' => '', 'fieldsets' => [], 'fields' => [], 'autocomplete' => '', 'novalidate' => '', 'enctype' => '', 'target' => '', 'accept' => 'image/*,.pdf', 'enctype' => 'multipart/form-data'];
-    protected $errors = [];
+    protected $attributes = ['fieldsets' => [], 'fields' => [], 'accept' => 'image/*,.pdf', 'enctype' => 'multipart/form-data'];
     
     protected $showBootstrap = false;
 
@@ -151,7 +150,7 @@ abstract class FormBase
 
     /**
      * Indica si se debe mostrar los estilos bootstrap
-     * @param type $show
+     * @param boolean $show
      * @return $this
      */
     public function showBootstrap($show = true)
@@ -217,7 +216,7 @@ abstract class FormBase
 
         return $this;
     }
-    
+
     /**
      * Obtiene un campo por su id
      * @param string $id
@@ -286,7 +285,7 @@ abstract class FormBase
 
     /**
      * Obtiene un fieldset por su id
-     * @param type $id
+     * @param string | int $id
      * @return null | FieldSetUI
      */
     public function getFieldsetById($id)
@@ -358,6 +357,9 @@ abstract class FormBase
         if(!empty($this->getFields())){
             
             foreach($this->getFields() as $field){
+                /**
+                 * @var FieldBase $field
+                 */
                 if($this->readOnly){
                     $field->setReadOnly();
                 }                
@@ -375,7 +377,7 @@ abstract class FormBase
 
     /**
      * Retorna el formulario convertido a json
-     * @return json
+     * @return string JSON
      */
     public function toJson()
     {
@@ -443,8 +445,8 @@ abstract class FormBase
     
     /**
      * 
-     * @param type $name
-     * @param type $value
+     * @param $name
+     * @param $value
      * @return Field
      */
     public function createField($name, $value = '')
@@ -457,32 +459,32 @@ abstract class FormBase
 
     public function getId()
     {
-        return $this->attributes['id'];
+        return @$this->attributes['id'];
     }
 
     public function getClass()
     {
-        return $this->attributes['class'];
+        return @$this->attributes['class'];
     }
 
     public function getAction()
     {
-        return $this->attributes['action'];
+        return @$this->attributes['action'];
     }
 
     public function getMethod()
     {
-        return $this->attributes['method'];
+        return @$this->attributes['method'];
     }
 
     public function getName()
     {
-        return $this->attributes['name'];
+        return @$this->attributes['name'];
     }
 
     public function getCaption()
     {
-        return $this->attributes['caption'];
+        return @$this->attributes['caption'];
     }
 
     public function getFieldsets()
@@ -497,27 +499,27 @@ abstract class FormBase
 
     public function getAutocomplete()
     {
-        return $this->attributes['autocomplete'];
+        return @$this->attributes['autocomplete'];
     }
 
     public function getNovalidate()
     {
-        return $this->attributes['novalidate'];
+        return @$this->attributes['novalidate'];
     }
 
     public function getEnctype()
     {
-        return $this->attributes['enctype'];
+        return @$this->attributes['enctype'];
     }
 
     public function getTarget()
     {
-        return $this->attributes['target'];
+        return @$this->attributes['target'];
     }
 
     public function getAccept()
     {
-        return $this->attributes['accept'];
+        return @$this->attributes['accept'];
     }
 
     public function setId($id)
@@ -639,9 +641,28 @@ abstract class FormBase
             /**
              * @var FieldBase $field
              */
-            if(isset($_POST[$field->getName()])){
-                $value = filter_input(INPUT_POST, $field->getName());
-                $field->setValue($value);
+            $fieldName = trim($field->getName(), "[]");
+            switch($field->getType()){
+                case 'radio':
+                    $value = filter_input(INPUT_POST, $fieldName);
+                    $field->hasBeenSelected = isset($_POST[$fieldName]);
+                    $field->setChecked($value == $field->getValue());
+                    break;
+
+                case 'checkbox':
+                    $value = filter_input(INPUT_POST, $fieldName, FILTER_DEFAULT, FILTER_REQUIRE_ARRAY);
+                    if(is_array($value)){
+                        $field->setChecked(in_array($field->getValue(), $value));
+                    } else {
+                        $value = filter_input(INPUT_POST, $fieldName);
+                        $field->setChecked($value == $field->getValue());
+                    }
+                    break;
+
+                default:
+                    $value = filter_input(INPUT_POST, $fieldName);
+                    $field->setValue($value);
+                    break;
             }
         }
         

@@ -23,7 +23,7 @@ use formGenereitor\ui\{FieldUI, FormUI};
  */
 abstract class FieldSetBase 
 {    
-    protected $attributes = ['id' => '', 'class' => '', 'style' => '', 'fields' => [],];
+    protected $attributes = ['fields' => [],];
     protected $legend = "";
     protected $readOnly = false;
     protected $showFieldLabel = true;
@@ -169,12 +169,12 @@ abstract class FieldSetBase
 
     public function getId()
     {
-        return $this->attributes['id'];
+        return @$this->attributes['id'];
     }
     
     public function getClass()
     {
-        return $this->attributes['class'];
+        return @$this->attributes['class'];
     }
     
     public function getFields()
@@ -190,7 +190,7 @@ abstract class FieldSetBase
     
     public function getStyle()
     {
-        return $this->attributes['style'];
+        return @$this->attributes['style'];
     }
     
     public function setStyle($style)

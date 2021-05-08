@@ -13,8 +13,7 @@
 
 
 /**
- * TODO: 
- * tener en cuenta al momento de subir un archivo o imagen, hacer que el formulario acepte el formato
+ * TODO: tener en cuenta al momento de subir un archivo o imagen, hacer que el formulario acepte el formato
  * gestionar la etiqueta optgroup de los select
  * gestionar la etiqueta datalist 
  * hacer una clase manejador de formulario, que valide, mueva, recorte las imagenes, que valide los formularios y muestres mensajes de error, que indique cuales campos serán tipo select, etc que tambien indique si el formulario tiene estilos bootstrap, que filtre/escape/limpie/valide los campos de acuerdo a tu tipo
@@ -47,7 +46,7 @@ abstract class FieldBase
     // Options for Label
     protected $showLabel = true;
     protected $labelContent = "";
-    protected $labelAttributes = ['id' => '', 'class' => '', 'for' => '', 'form' => '', 'accesskey' => ''];
+    protected $labelAttributes = [];
     
     // Options for field type select
     protected $selectOptions = [];
@@ -55,30 +54,25 @@ abstract class FieldBase
     protected $optionSelected = '';
     
     // Options for field type textarea
-    const ALLOWED_ATTRIBUTER_FOR_TEXTAREA = ['name', 'id', 'cols', 'rows', 'class', 'maxlength', 'placeholder', 'required', 'wrap', 'readonly', 'form', 'disabled'];
+    const ALLOWED_ATTRIBUTER_FOR_TEXTAREA = ['name', 'id', 'cols', 'rows', 'class', 'maxlength', 'placeholder', 'required', 'wrap', 'readonly', 'form', 'disabled', 'title',];
 
     protected $showBootstrap = false;
     
     protected $form;
     
     protected static $id = 1;
-    
-    protected $constraintAttributes = ['required' => '', 'maxlength' => '', 'minlength' => '', 'max' => '', 'min' => '', 'size' => '', 'pattern' => '',];
+
     protected $errors = [];
     protected $renderErrors = "";
 
-    const RULE_REQUIRED = 'required';
-    const RULE_EMAIL = 'email';
-    const RULE_MIN = 'min';
-    const RULE_MAX = 'max';
-
     public function __construct(string $name, $value = null, string $type = 'text', $showBootstrap = false)
     {
+        //TODO: pensar en hacer un switch case para que dependiendo del tipo de campo, se seteen algunos valores
         $this->setName($name);
         $this->setType($type);
         $this->setValue($value);
-        $this->setPlaceholder($name);
-        $this->setTitle($name);
+        $this->setPlaceholder(trim($name, "[]"));
+        $this->setTitle(trim($name, "[]"));
         if(1 == self::$id) { $this->setAutofocus(); }
         $fieldId = 'field_' . self::$id++;
         $this->setId($fieldId);
@@ -95,8 +89,7 @@ abstract class FieldBase
     public function get(string $attrName)
     {
         $attrName = strtolower($attrName);
-        $ret = @$this->getAttributes()[$attrName];
-        return $ret;
+        return @$this->getAttributes()[$attrName];
     }
     
     /**
@@ -253,14 +246,15 @@ abstract class FieldBase
         if($this->showLabel){
             $attr = $this->renderLabelAttibutes();
             $label = "\t<label {$attr}>";
-            $label .= $ret;
-            $label .= $this->getLabel();
+            $label .= $ret . $this->getLabel();
             $label .= "</label><br>" . PHP_EOL;
             $ret = $label;
         }
+        $ret .= $this->renderErrors;
         
         if($this->showBootstrap){
-            $ret = "<div class='radio'>\n{$ret}</div>" . PHP_EOL;
+            $hasError = !empty($this->errors) ? " has-error" : "";
+            $ret = "<div class='radio$hasError'>\n{$ret}</div>" . PHP_EOL;
         }
         
         return $ret;
@@ -282,9 +276,11 @@ abstract class FieldBase
             $label .= "</label><br>" . PHP_EOL;
             $ret = $label;
         }
+        $ret .= $this->renderErrors;
         
         if($this->showBootstrap){
-            $ret = "<div class='checkbox'>\n{$ret}</div>" . PHP_EOL;
+            $hasError = !empty($this->errors) ? " has-error" : "";
+            $ret = "<div class='checkbox$hasError'>\n{$ret}</div>" . PHP_EOL;
         }
         
         return $ret;
@@ -392,12 +388,14 @@ abstract class FieldBase
             $this->setClassBootstrap();
         }
         
-        $ret .= "\t<input " . $this->renderAttributes() . "/><br>" . PHP_EOL;
+        $ret .= "\t<input " . $this->renderAttributes() . "/>" . PHP_EOL;
         $ret .= $this->renderErrors;
         
         if($this->showBootstrap){
             $hasError = !empty($this->errors) ? " has-error" : "";
             $ret = "<div class='form-group$hasError'>\n{$ret}</div>" . PHP_EOL;
+        } elseif(empty($this->errors)) {
+            $ret .= "\t<br>" . PHP_EOL;
         }
         
         return $ret;
@@ -414,6 +412,12 @@ abstract class FieldBase
     }
 
 
+    /**
+     * Recibe como primer parámetro un array asociativo con el par clave = valor
+     * @param array $options
+     * @param null $selected
+     * @return $this
+     */
     public function setOptions(array $options, $selected = null)
     {
         if(!empty($options)){
@@ -484,8 +488,7 @@ abstract class FieldBase
 
     public function getLabel()
     {
-        $ret = ("" != $this->labelContent) ? $this->labelContent : $this->getTitle();
-        return $ret;
+        return ("" != $this->labelContent) ? $this->labelContent : $this->getTitle();
     }
     
     public function setLabel($label)
@@ -1032,7 +1035,7 @@ abstract class FieldBase
             if("" != $attrValue and !is_array($attrValue)){
                 switch ($attribute){
                     case 'required':
-                        if("" == $this->getValue()){
+                        if("" == $this->getValue() or !$this->getChecked()){
                             $this->errors[] = "Campo obligatorio";
                         }
                         break;
