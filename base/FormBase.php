@@ -45,6 +45,25 @@ abstract class FormBase
     
     protected static $id = 1;
 
+    protected $language = 'en';
+
+    /**
+     * @return string
+     */
+    public function getLanguage(): string
+    {
+        return $this->language;
+    }
+
+    /**
+     * @param string $language
+     */
+    public function setLanguage(string $language)
+    {
+        $this->language = $language;
+        return $this;
+    }
+
     public function __construct($fiels = [], $action = "", $method = 'post')
     {
         $this->setFields($fiels);
@@ -442,18 +461,19 @@ abstract class FormBase
         $ret = "</form>\n";
         return $ret;
     }
-    
+
     /**
-     * 
      * @param $name
-     * @param $value
+     * @param string $value
+     * @param string $type
      * @return Field
      */
-    public function createField($name, $value = '')
+    public function createField($name, $value = '', $type = '')
     {
-        $field = new Field($name, $value);
+        $field = new Field($name, $value, $type);
         $this->addField($field);
         $field->setForm($this);
+        $field->setLanguage($this->getLanguage());
         return $field;
     }
 
@@ -645,7 +665,6 @@ abstract class FormBase
             switch($field->getType()){
                 case 'radio':
                     $value = filter_input(INPUT_POST, $fieldName);
-                    $field->hasBeenSelected = isset($_POST[$fieldName]);
                     $field->setChecked($value == $field->getValue());
                     break;
 

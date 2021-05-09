@@ -24,7 +24,10 @@
 
 namespace formGenereitor\base;
 
+use formGenereitor\base\ErrorBase;
 use formGenereitor\ui\FormUI;
+
+require_once "ErrorBase.php";
 
 /**
  * Description of FieldBase
@@ -64,6 +67,24 @@ abstract class FieldBase
 
     protected $errors = [];
     protected $renderErrors = "";
+    protected $language = 'en';
+
+    /**
+     * @return string
+     */
+    public function getLanguage(): string
+    {
+        return $this->language;
+    }
+
+    /**
+     * @param string $language
+     */
+    public function setLanguage(string $language)
+    {
+        $this->language = $language;
+        return $this;
+    }
 
     /**
      * FieldBase constructor.
@@ -107,9 +128,7 @@ abstract class FieldBase
     public function set(string $attrName, $value)
     {
         $attrName = strtolower($attrName);
-        if(isset($this->attributes[$attrName])){
-            $this->attributes[$attrName] = $value;
-        }
+        $this->attributes[$attrName] = $value;
         
         return $this;
     }
@@ -1041,40 +1060,43 @@ abstract class FieldBase
             if("" != $attrValue and !is_array($attrValue)){
                 switch ($attribute){
                     case 'required':
-                        if('radio' == $this->getType() and !$this->getChecked()){
-                            $this->errors[] = "Campo obligatorio";
+                        $msj = ErrorBase::getError($attribute, $attrValue, $this->getLanguage());
+                        if('checkbox' == $this->getType() and !$this->getChecked()){
+                            $this->errors[] = $msj;
+                        } elseif ('radio' == $this->getType() and !isset($_POST[$this->getName()])){
+                            $this->errors[] = $msj;
                         } elseif ("" == $this->getValue()){
-                            $this->errors[] = "Campo obligatorio";
+                            $this->errors[] = $msj;
                         }
                         break;
                         
                     case 'min':
                         if(($this->getValue() < $attrValue)){
-                            $this->errors[] = "El valor debe ser mayor o igual que {$attrValue}";
+                            $this->errors[] = ErrorBase::getError($attribute, $attrValue, $this->getLanguage()); //"El valor debe ser mayor o igual que {$attrValue}";
                         }
                         break;
                     
                     case 'max':
                         if(($this->getValue() > $attrValue)){
-                            $this->errors[] = "El valor debe ser menor o igual que {$attrValue}";
+                            $this->errors[] = ErrorBase::getError($attribute, $attrValue, $this->getLanguage());
                         }
                         break;
                         
                     case 'minlength':
                         if(strlen($this->getValue()) < $attrValue){
-                            $this->errors[] = "No supera los {$attrValue} caracteres";
+                            $this->errors[] = ErrorBase::getError($attribute, $attrValue, $this->getLanguage());
                         }
                         break;
                         
                     case 'maxlength':
                         if(strlen($this->getValue()) > $attrValue){
-                            $this->errors[] = "Superar los {$attrValue} caracteres";
+                            $this->errors[] = ErrorBase::getError($attribute, $attrValue, $this->getLanguage());
                         }
                         break;
                         
                     case 'pattern':
                         if(!preg_match("/" . $attrValue . "/", $this->getValue())){
-                            $this->errors[] = "NO sigue el patrón {$attrValue}";
+                            $this->errors[] = ErrorBase::getError($attribute, $attrValue, $this->getLanguage());
                         }
                         break;
                 }
