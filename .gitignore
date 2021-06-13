@@ -8,3 +8,5 @@ nbproject/*
 .idea/.gitignore
 
 /vendor/
+.idea/formGenereitor1.0.0.iml
+.idea/.name

@@ -4,7 +4,7 @@ namespace formGenereitor\base;
 
 use formGenereitor\interfaces\FormInterface;
 
-require_once "ErrorBase.php";
+require_once 'vendor/autoload.php';
 
 /**
  * @author Rafael Perez <rafaelperez7461@gmail.com>

@@ -4,8 +4,7 @@ namespace formGenereitor;
 
 use formGenereitor\interfaces\FieldSetInterface;
 
-require_once 'base/FieldSetBase.php';
-require_once 'interfaces/FieldSetInterface.php';
+require_once 'vendor/autoload.php';
 
 /**
  * @author Rafael Perez <rafaelperez7461@gmail.com>

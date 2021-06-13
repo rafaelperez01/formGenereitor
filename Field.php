@@ -2,8 +2,7 @@
 
 namespace formGenereitor;
 
-require_once 'base/FieldBase.php';
-require_once 'interfaces/FieldInterface.php';
+require_once 'vendor/autoload.php';
 
 /**
  * @author Rafael Perez <rafaelperez7461@gmail.com>

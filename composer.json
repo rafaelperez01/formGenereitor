@@ -1,6 +1,6 @@
 {
     "name": "rafaelperez01/form-genereitor1.0.0",
-    "description": "Se trata de una librer\u0000a que te ayudar\u0000 a crear un formulario de manera r\u0000pida y sencilla.",
+    "description": "Se trata de una libreria que te ayudara a crear un formulario de manera rapida y sencilla.",
     "type": "library",
     "license": "MIT",
     "authors": [
@@ -10,5 +10,10 @@
         }
     ],
     "minimum-stability": "stable",
-    "require": {}
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "formGenereitor\\": "."
+        }
+    }
 }
