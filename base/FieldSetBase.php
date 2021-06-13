@@ -1,25 +1,15 @@
 <?php
 
-/*
- * Copyright 2020 Rafael Pérez.
- *
- * Software protegido por la propiedad intelectual.
- * Queda prohibido copiar, modificar, fusionar, publicar, distribuir, sublicenciar y / o vender
- * copias no autorizadas del software
- *
- * El aviso de copyright anterior y este aviso de permiso se incluirán en todas las copias o 
- * porciones sustanciales del software.
- */
-
 namespace formGenereitor\base;
 
 use formGenereitor\Field;
-use formGenereitor\ui\{FieldUI, FormUI};
+use formGenereitor\interfaces\{FieldInterface, FormInterface};
 
 /**
- * Description of FieldSetBase
- *
- * @author Rafael Pérez.
+ * @author Rafael Perez <rafaelperez7461@gmail.com>
+ * Displays <a href="https://opensource.org/licenses/MIT">The MIT License</a>
+ * @license https://opensource.org/licenses/MIT The MIT License
+ * @package formGenereitor1.0.0
  */
 abstract class FieldSetBase 
 {    
@@ -39,7 +29,7 @@ abstract class FieldSetBase
     }
     
     /**
-     * Obtiene el valor del atributo solicitado (si existe dicho atributo)
+     * If an attribute exists, it gets the value.
      * 
      * @param string $attrName
      * @return string|null
@@ -66,7 +56,10 @@ abstract class FieldSetBase
         
         return $this;
     }
-    
+
+    /**
+     * @return string
+     */
     protected function renderAttributes()
     {
         $ret = [];
@@ -78,10 +71,9 @@ abstract class FieldSetBase
         
         return implode(" ", $ret);
     }
-    
+
     /**
-     * 
-     * @return FormUI|null
+     * @return FormInterface|null
      */
     public function getForm()
     {
@@ -90,16 +82,18 @@ abstract class FieldSetBase
 
 
     /**
-     * 
-     * @param FormUI $form
+     * @param FormInterface $form
      * @return $this
      */
-    public function setForm(FormUI $form)
+    public function setForm(FormInterface $form)
     {
         $this->form = $form;
         return $this;
     }
-    
+
+    /**
+     * @return string
+     */
     public function render()
     {
         $ret = "<fieldset {$this->renderAttributes()}>\n";
@@ -108,7 +102,7 @@ abstract class FieldSetBase
         }
         
         foreach ($this->getFields() as $key => $field){
-            if($field instanceof FieldUI){
+            if($field instanceof FieldInterface){
                 $f = $field;
             } else {
                 $f = new Field($key, $field);
@@ -125,25 +119,41 @@ abstract class FieldSetBase
         
         return $ret;
     }
-    
+
+    /**
+     * @param $name
+     * @param string $value
+     * @param string $type
+     * @return $this
+     */
     public function addField($name, $value = "", $type = "")
     {
         $f = new Field($name, $value, $type);
         $this->attributes['fields'][$f->getId()] = $f;
         return $this;
     }
-    
-    public function addFieldObj(FieldUI $field)
+
+    /**
+     * @param FieldInterface $field
+     * @return $this
+     */
+    public function addFieldObj(FieldInterface $field)
     {
         $this->attributes['fields'][$field->getId()] = $field;
         return $this;
     }
-    
+
+    /**
+     * @return string
+     */
     public function __toString() 
     {
         return $this->render();
     }
-    
+
+    /**
+     * @return false|string
+     */
     public function toJson()
     {
         $ret['legend'] = $this->getLegend();
@@ -156,49 +166,79 @@ abstract class FieldSetBase
         
         return json_encode($ret);
     }
-    
+
+    /**
+     * @return array[]|null
+     */
     public function toArray()
     {
         return json_decode($this->toJson(), true);
     }
-    
+
+    /**
+     * @return array[]
+     */
     public function getAttributes()
     {
         return $this->attributes;
     }
 
+    /**
+     * @return array
+     */
     public function getId()
     {
         return @$this->attributes['id'];
     }
-    
+
+    /**
+     * @return array
+     */
     public function getClass()
     {
         return @$this->attributes['class'];
     }
-    
+
+    /**
+     * @return array
+     */
     public function getFields()
     {
         return $this->attributes['fields'];
     }
-    
+
+    /**
+     * @param $id
+     * @return $this
+     */
     public function setId($id)
     {
         $this->attributes['id'] = $id;
         return $this;
     }
-    
+
+    /**
+     * @return array
+     */
     public function getStyle()
     {
         return @$this->attributes['style'];
     }
-    
+
+    /**
+     * @param $style
+     * @return $this
+     */
     public function setStyle($style)
     {
         $this->attributes['style'] = str_replace('"', "'", $style);
         return $this;
     }
-    
+
+    /**
+     * @param $class
+     * @return $this
+     */
     public function setClass($class)
     {
         $this->attributes['class'] = $class;
@@ -206,16 +246,15 @@ abstract class FieldSetBase
     }
 
     /**
-     * Puede recivir un array con el par clave-valor para crear y añadir campos
-     * a partir de este, o puede recivir un array de objetos de tipo FieldUI y
-     * los añade a la lista de campos
+     * You can receive an array with the key-value pair to create or add fields from it,
+     * or you can receive an array of objects of type FieldInterface and add them to the list of fields
      * @param array $fields
      * @return $this
      */
     public function setFields(array $fields)
     {
         foreach ($fields as $name => $value){
-            if($value instanceof FieldUI){
+            if($value instanceof FieldInterface){
                 $f = $value;
             } else {
                 $f = new Field($name, $value);
@@ -226,35 +265,57 @@ abstract class FieldSetBase
         
         return $this;
     }
-    
+
+    /**
+     * @return string
+     */
     public function getLegend() 
     {
         return $this->legend;
     }
 
+    /**
+     * @return bool
+     */
     public function getReadOnly() 
     {
         return $this->readOnly;
     }
 
+    /**
+     * @param $legend
+     * @return $this
+     */
     public function setLegend($legend) 
     {
         $this->legend = $legend;
         return $this;
     }
 
+    /**
+     * @param $readOnly
+     * @return $this
+     */
     public function setReadOnly($readOnly) 
     {
         $this->readOnly = true === $readOnly;
         return $this;
     }
-    
+
+    /**
+     * @param bool $show
+     * @return $this
+     */
     public function showFieldLabel($show = true) 
     {
         $this->showFieldLabel = true === $show;
         return $this;
     }
 
+    /**
+     * @param bool $show
+     * @return $this
+     */
     public function showFieldBootstrap($show = true) 
     {
         $this->showFieldBootstrap = true === $show;

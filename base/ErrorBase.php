@@ -1,9 +1,13 @@
 <?php
 
-
 namespace formGenereitor\base;
 
-
+/**
+ * @author Rafael Perez <rafaelperez7461@gmail.com>
+ * Displays <a href="https://opensource.org/licenses/MIT">The MIT License</a>
+ * @license https://opensource.org/licenses/MIT The MIT License
+ * @package formGenereitor1.0.0
+ */
 abstract class ErrorBase
 {
     const LANGUAGE_ES = 'es';

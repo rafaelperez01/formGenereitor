@@ -1,46 +1,23 @@
 <?php
 
-/*
- * Copyright 2020 Rafael Pérez.
- *
- * Software protegido por la propiedad intelectual.
- * Queda prohibido copiar, modificar, fusionar, publicar, distribuir, sublicenciar y / o vender
- * copias no autorizadas del software
- *
- * El aviso de copyright anterior y este aviso de permiso se incluirán en todas las copias o 
- * porciones sustanciales del software.
- */
-
-
-/**
- * TODO: tener en cuenta al momento de subir un archivo o imagen, hacer que el formulario acepte el formato
- * gestionar la etiqueta optgroup de los select
- * gestionar la etiqueta datalist 
- * hacer una clase manejador de formulario, que valide, mueva, recorte las imagenes, que valide los formularios y muestres mensajes de error, que indique cuales campos serán tipo select, etc que tambien indique si el formulario tiene estilos bootstrap, que filtre/escape/limpie/valide los campos de acuerdo a tu tipo
- * 
- * 
- * 
- */
-
 namespace formGenereitor\base;
 
-use formGenereitor\base\ErrorBase;
-use formGenereitor\ui\FormUI;
+use formGenereitor\interfaces\FormInterface;
 
 require_once "ErrorBase.php";
 
 /**
- * Description of FieldBase
- *
- * @author Rafael Pérez.
+ * @author Rafael Perez <rafaelperez7461@gmail.com>
+ * Displays <a href="https://opensource.org/licenses/MIT">The MIT License</a>
+ * @license https://opensource.org/licenses/MIT The MIT License
+ * @package formGenereitor1.0.0
  */
 abstract class FieldBase 
 {    
     /**
-     * En la siguiente lista NO estan incluidos todos los atributos aceptados por un 
-     * campo, pero si los más usados.
-     * Para saber todos los atributos permitidos visitar:
-     * https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes
+     * The following list does NOT include all the attributes accepted by a field,
+     * but the most used ones. To know all the allowed attributes visit:
+     * Displays <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes">Global attributes</a>
      */
     protected $attributes = [];
     
@@ -96,7 +73,6 @@ abstract class FieldBase
      */
     public function __construct(string $name, $value = null, string $type = 'text', bool $showBootstrap = false)
     {
-        //TODO: pensar en hacer un switch case para que dependiendo del tipo de campo, se seteen algunos valores
         $this->setName($name);
         $this->setType($type);
         $this->setValue($value);
@@ -110,7 +86,7 @@ abstract class FieldBase
     }
 
     /**
-     * Obtiene el valor del atributo solicitado (si existe dicho atributo)
+     * If an attribute exists, it gets the value.
      *
      * @param string $attrName
      * @return mixed
@@ -126,7 +102,7 @@ abstract class FieldBase
      * @param $value
      * @return $this
      */
-    public function set(string $attrName, $value): FieldBase
+    public function set(string $attrName, $value)
     {
         $attrName = strtolower($attrName);
         $this->attributes[$attrName] = $value;
@@ -136,8 +112,7 @@ abstract class FieldBase
 
 
     /**
-     * Setea el tipo de campo, validando que el tipo sea uno permitido dentro
-     * de la lista FIELD_TYPES_LIST
+     * Set the field type, validating that the type is one allowed within the FIELD_TYPES_LIST list
      *
      * @param string $type
      * @return $this
@@ -147,8 +122,11 @@ abstract class FieldBase
         $type = strtolower($type);
         $this->attributes['type'] = in_array($type, self::FIELD_TYPES_LIST) ? $type : 'text';        
         return $this;
-    }    
-    
+    }
+
+    /**
+     * @return string
+     */
     public function render()
     {
         $ret = '';
@@ -178,11 +156,17 @@ abstract class FieldBase
         
         return $ret;
     }
-    
+
+    /**
+     * @return string
+     */
     public function __toString() {
         return $this->render();
     }
-    
+
+    /**
+     * @return string
+     */
     protected function renderAttributes()
     {
         switch($this->getType()){
@@ -207,7 +191,10 @@ abstract class FieldBase
 
         return implode(" ", $renderAttributes);
     }
-    
+
+    /**
+     * @return array
+     */
     protected function getTextAreaAttr()
     {
         $ret = [];
@@ -221,7 +208,10 @@ abstract class FieldBase
         
         return $ret;
     }
-    
+
+    /**
+     * @return array
+     */
     protected function getSelectAttr()
     {
         $ret = [];
@@ -236,6 +226,9 @@ abstract class FieldBase
         return $ret;
     }
 
+    /**
+     * @return string
+     */
     protected function renderDefault()
     {
         $ret = "";
@@ -260,7 +253,10 @@ abstract class FieldBase
 
         return $ret;
     }
-    
+
+    /**
+     * @return string
+     */
     protected function renderRadio()
     {
         if($this->showBootstrap){
@@ -285,7 +281,10 @@ abstract class FieldBase
         
         return $ret;
     }
-    
+
+    /**
+     * @return string
+     */
     protected function renderCheckbox()
     {
         if($this->showBootstrap){
@@ -311,7 +310,10 @@ abstract class FieldBase
         
         return $ret;
     }
-    
+
+    /**
+     * @return string
+     */
     protected function renderSubmit()
     {
         $this->showLabel(false);
@@ -329,7 +331,9 @@ abstract class FieldBase
         return $ret;
     }
 
-
+    /**
+     * @return string
+     */
     protected function renderSelect()
     {
         $ret = "";
@@ -356,7 +360,10 @@ abstract class FieldBase
         
         return $ret;
     }
-    
+
+    /**
+     * @return string
+     */
     protected function renderOptions()
     {
         $ret = "";
@@ -371,7 +378,10 @@ abstract class FieldBase
         
         return $ret;
     }
-    
+
+    /**
+     * @return string
+     */
     protected function renderTextArea()
     {
         $ret = "";
@@ -397,7 +407,10 @@ abstract class FieldBase
         
         return $ret;
     }
-    
+
+    /**
+     * @return string
+     */
     protected function renderDate()
     {
         $ret = "";
@@ -427,11 +440,17 @@ abstract class FieldBase
         return $ret;
     }
 
+    /**
+     * @return string
+     */
     protected function getOptionSelected()
     {
         return $this->optionSelected;
     }
-    
+
+    /**
+     * @return array
+     */
     public function getOptions()
     {
         return $this->selectOptions;
@@ -439,7 +458,7 @@ abstract class FieldBase
 
 
     /**
-     * Recibe como primer parámetro un array asociativo con el par clave = valor
+     * It receives as the first parameter an associative array with the key = value pair
      * @param array $options
      * @param null $selected
      * @return $this
@@ -453,7 +472,11 @@ abstract class FieldBase
         
         return $this;
     }
-    
+
+    /**
+     * @param $selected
+     * @return $this
+     */
     protected function setOptionSelected($selected)
     {
         if(!is_null($selected)){
@@ -461,19 +484,30 @@ abstract class FieldBase
         }
         return $this;
     }
-    
+
+    /**
+     * @param bool $show
+     * @return $this
+     */
     public function showLabel($show = true)
     {
         $this->showLabel = true === $show;
         return $this;
     }
-    
+
+    /**
+     * @param bool $show
+     * @return $this
+     */
     public function showBootstrap($show = true)
     {
         $this->showBootstrap = true === $show;
         return $this;
     }
-    
+
+    /**
+     * @return string
+     */
     protected function renderLabelAttibutes()
     {
         $renderAttributes = [];
@@ -486,6 +520,9 @@ abstract class FieldBase
         return implode(" ", $renderAttributes);
     }
 
+    /**
+     * @return string
+     */
     protected function renderLabel()
     {        
         $attr = $this->renderLabelAttibutes();
@@ -496,6 +533,9 @@ abstract class FieldBase
         return $ret;      
     }
 
+    /**
+     * @return false|string
+     */
     public function toJson()
     {
         $ret = array_filter($this->getAttributes());
@@ -505,18 +545,27 @@ abstract class FieldBase
         
         return json_encode($ret);
     }
-    
+
+    /**
+     * @return array
+     */
     public function toArray(): array
     {
         return json_decode($this->toJson(), true);
     }
 
-
+    /**
+     * @return mixed|string
+     */
     public function getLabel()
     {
         return ("" != $this->labelContent) ? $this->labelContent : $this->getTitle();
     }
-    
+
+    /**
+     * @param $label
+     * @return $this
+     */
     public function setLabel($label)
     {       
         $this->labelContent = $label;
@@ -530,247 +579,396 @@ abstract class FieldBase
         
         return $this;
     }
-    
+
+    /**
+     * @return mixed
+     */
     public function getLabelId()
     {
         return @$this->labelAttributes['id'];
     }
-    
+
+    /**
+     * @param string $id
+     * @return $this
+     */
     public function setLabelId(string $id)
     {
         $id = str_replace(" ", "_", $id);
         $this->labelAttributes['id'] = $id;
         return $this;
     }
-    
+
+    /**
+     * @return mixed
+     */
     public function getLabelFor()
     {
         return @$this->labelAttributes['for'];
     }
-    
+
+    /**
+     * @param string $for
+     * @return $this
+     */
     public function setLabelFor(string $for)
     {
         $for = str_replace(" ", "_", $for);
         $this->labelAttributes['for'] = $for;
         return $this;
     }
-    
+
+    /**
+     * @return mixed
+     */
     public function getLabelClass()
     {
         return @$this->labelAttributes['class'];
     }
-    
+
+    /**
+     * @param string $class
+     * @return $this
+     */
     public function setLabelClass(string $class)
     {
         $this->labelAttributes['class'] = $class;
         return $this;
     }
-    
+
+    /**
+     * @return mixed
+     */
     public function getLabelForm()
     {
         return @$this->labelAttributes['form'];
     }
-    
+
+    /**
+     * @param string $form
+     * @return $this
+     */
     public function setLabelForm(string $form)
     {
         $this->labelAttributes['form'] = $form;
         return $this;
     }
 
+    /**
+     * @return mixed
+     */
     public function getLabelAccesskey()
     {
         return @$this->labelAttributes['accesskey'];
     }
-    
+
+    /**
+     * @param string $accesskey
+     * @return $this
+     */
     public function setLabelAccesskey(string $accesskey)
     {
         $this->labelAttributes['accesskey'] = $accesskey;
         return $this;
     }
 
+    /**
+     * @return array
+     */
     public function getAttributes()
     {
         return $this->attributes;
     }
-    
+
+    /**
+     * @return array
+     */
     public function getLabelAttributes()
     {
         return $this->labelAttributes;
     }
 
+    /**
+     * @return mixed
+     */
     public function getName()
     {
         return @$this->attributes['name'];
     }
 
+    /**
+     * @return mixed
+     */
     public function getType()
     {
         return @$this->attributes['type'];
     }
 
+    /**
+     * @return mixed
+     */
     public function getId()
     {
         return @$this->attributes['id'];
     }
 
+    /**
+     * @return mixed
+     */
     public function getClass()
     {
         return @$this->attributes['class'];
     }
 
+    /**
+     * @return mixed
+     */
     public function getValue()
     {
         return @$this->attributes['value'];
     }
 
+    /**
+     * @return mixed
+     */
     public function getAlt()
     {
         return @$this->attributes['alt'];
     }
 
+    /**
+     * @return mixed
+     */
     public function getTitle()
     {
         return @$this->attributes['title'];
     }
 
+    /**
+     * @return mixed
+     */
     public function getPlaceholder()
     {
         return @$this->attributes['placeholder'];
     }
 
+    /**
+     * @return mixed
+     */
     public function getRequired()
     {
         return @$this->attributes['required'];
     }
 
+    /**
+     * @return mixed
+     */
     public function getFormTarget()
     {
         return @$this->attributes['form'];
     }
 
+    /**
+     * @return mixed
+     */
     public function getMaxlength()
     {
         return @$this->attributes['maxlength'];
     }
 
+    /**
+     * @return mixed
+     */
     public function getMinlength()
     {
         return @$this->attributes['minlength'];
     }
 
+    /**
+     * @return mixed
+     */
     public function getMax()
     {
         return @$this->attributes['max'];
     }
 
+    /**
+     * @return mixed
+     */
     public function getMin()
     {
         return @$this->attributes['min'];
     }
 
+    /**
+     * @return mixed
+     */
     public function getRows()
     {
         return @$this->attributes['rows'];
     }
 
+    /**
+     * @return mixed
+     */
     public function getCols()
     {
         return @$this->attributes['cols'];
     }
 
+    /**
+     * @return mixed
+     */
     public function getWidth()
     {
         return @$this->attributes['width'];
     }
 
+    /**
+     * @return mixed
+     */
     public function getHeight()
     {
         return @$this->attributes['height'];
     }
 
+    /**
+     * @return mixed
+     */
     public function getDisabled()
     {
         return @$this->attributes['disabled'];
     }
 
+    /**
+     * @return mixed
+     */
     public function getReadonly()
     {
         return @$this->attributes['readonly'];
     }
 
+    /**
+     * @return mixed
+     */
     public function getAutofocus()
     {
         return @$this->attributes['autofocus'];
     }
 
+    /**
+     * @return mixed
+     */
     public function getAutocomplete()
     {
         return @$this->attributes['autocomplete'];
     }
 
+    /**
+     * @return mixed
+     */
     public function getSelected()
     {
         return @$this->attributes['selected'];
     }
-    
+
+    /**
+     * @return mixed
+     */
     public function getChecked()
     {
         return @$this->attributes['checked'];
     }
 
+    /**
+     * @return mixed
+     */
     public function getMultiple()
     {
         return @$this->attributes['multiple'];
     }
 
+    /**
+     * @return mixed
+     */
     public function getStep()
     {
         return @$this->attributes['step'];
     }
 
+    /**
+     * @return mixed
+     */
     public function getSize()
     {
         return @$this->attributes['size'];
     }
 
+    /**
+     * @return mixed
+     */
     public function getSrc()
     {
         return @$this->attributes['src'];
     }
 
+    /**
+     * @return mixed
+     */
     public function getPattern()
     {
         return @$this->attributes['pattern'];
     }
 
+    /**
+     * @return mixed
+     */
     public function getAccept()
     {
         return @$this->attributes['accept'];
     }
-    
+
+    /**
+     * @return mixed
+     */
     public function getWrap()
     {
         return @$this->attributes['wrap'];
     }
-    
+
+    /**
+     * @return mixed
+     */
     public function getStyle()
     {
         return @$this->attributes['style'];
     }
-    
-    public function setStyle($style)
+
+    /**
+     * @param string $style
+     * @return $this
+     */
+    public function setStyle(string $style)
     {
         $this->attributes['style'] = $style;
         return $this;
     }
 
-    public function setName($name)
+    /**
+     * @param string $name
+     * @return $this
+     */
+    public function setName(string $name)
     {
         $name = str_replace(" ", "_", $name);
         $this->attributes['name'] = $name;
         return $this;
     }
 
+    /**
+     * @param $id
+     * @return $this
+     */
     public function setId($id)
     {
         $id = str_replace(" ", "_", $id);
@@ -778,7 +976,10 @@ abstract class FieldBase
         $this->setLabelFor($id);
         return $this;
     }
-    
+
+    /**
+     * @return $this
+     */
     protected function setClassBootstrap()
     {
         switch ($this->getType()){
@@ -798,12 +999,20 @@ abstract class FieldBase
         return $this;
     }
 
-    public function setClass($class)
+    /**
+     * @param string $class
+     * @return $this
+     */
+    public function setClass(string $class)
     {
         $this->attributes['class'] = $class;
         return $this;
     }
 
+    /**
+     * @param $value
+     * @return $this
+     */
     public function setValue($value)
     {
         if (is_array($value)) {
@@ -816,13 +1025,21 @@ abstract class FieldBase
         return $this;
     }
 
-    public function setAlt($alt)
+    /**
+     * @param string $alt
+     * @return $this
+     */
+    public function setAlt(string $alt)
     {
         $this->attributes['alt'] = $alt;
         return $this;
     }
 
-    public function setTitle($title)
+    /**
+     * @param string $title
+     * @return $this
+     */
+    public function setTitle(string $title)
     {
         $this->attributes['title'] = $title;
         if("" == $this->getLabel()){
@@ -836,7 +1053,11 @@ abstract class FieldBase
         return $this;
     }
 
-    public function setPlaceholder($placeholder)
+    /**
+     * @param string $placeholder
+     * @return $this
+     */
+    public function setPlaceholder(string $placeholder)
     {
         $this->attributes['placeholder'] = $placeholder;
         if("" == $this->getLabel()){
@@ -850,6 +1071,10 @@ abstract class FieldBase
         return $this;
     }
 
+    /**
+     * @param bool $required
+     * @return $this
+     */
     public function setRequired($required = true)
     {
         $this->attributes['required'] = $required;
@@ -867,108 +1092,180 @@ abstract class FieldBase
         return $this;
     }
 
+    /**
+     * @param $maxlength
+     * @return $this
+     */
     public function setMaxlength($maxlength)
     {
         $this->attributes['maxlength'] = $maxlength;
         return $this;
     }
 
+    /**
+     * @param $minlength
+     * @return $this
+     */
     public function setMinlength($minlength)
     {
         $this->attributes['minlength'] = $minlength;
         return $this;
     }
 
+    /**
+     * @param $max
+     * @return $this
+     */
     public function setMax($max)
     {
         $this->attributes['max'] = $max;
         return $this;
     }
 
+    /**
+     * @param $min
+     * @return $this
+     */
     public function setMin($min)
     {
         $this->attributes['min'] = $min;
         return $this;
     }
 
+    /**
+     * @param $rows
+     * @return $this
+     */
     public function setRows($rows)
     {
         $this->attributes['rows'] = $rows;
         return $this;
     }
 
+    /**
+     * @param $cols
+     * @return $this
+     */
     public function setCols($cols)
     {
         $this->attributes['cols'] = $cols;
         return $this;
     }
 
+    /**
+     * @param $width
+     * @return $this
+     */
     public function setWidth($width)
     {
         $this->attributes['width'] = $width;
         return $this;
     }
 
+    /**
+     * @param $height
+     * @return $this
+     */
     public function setHeight($height)
     {
         $this->attributes['height'] = $height;
         return $this;
     }
 
+    /**
+     * @param bool $disabled
+     * @return $this
+     */
     public function setDisabled($disabled = true)
     {
         $this->attributes['disabled'] = true === $disabled;
         return $this;
     }
 
+    /**
+     * @param bool $readonly
+     * @return $this
+     */
     public function setReadonly($readonly = true)
     {
         $this->attributes['readonly'] = true === $readonly;
         return $this;
     }
 
+    /**
+     * @param bool $autofocus
+     * @return $this
+     */
     public function setAutofocus($autofocus = true)
     {
         $this->attributes['autofocus'] = true === $autofocus;
         return $this;
     }
 
+    /**
+     * @param bool $autocomplete
+     * @return $this
+     */
     public function setAutocomplete($autocomplete = true)
     {
         $this->attributes['autocomplete'] = true ===  $autocomplete;
         return $this;
     }
 
+    /**
+     * @param bool $selected
+     * @return $this
+     */
     public function setSelected($selected = true)
     {
         $this->attributes['selected'] = true === $selected;
         return $this;
     }
-    
+
+    /**
+     * @param bool $checked
+     * @return $this
+     */
     public function setChecked($checked = true)
     {
         $this->attributes['checked'] = true === $checked;
         return $this;
     }
 
+    /**
+     * @param bool $multiple
+     * @return $this
+     */
     public function setMultiple($multiple = true)
     {
         $this->attributes['multiple'] = true === $multiple;
         return $this;
     }
 
+    /**
+     * @param $step
+     * @return $this
+     */
     public function setStep($step)
     {
         $this->attributes['step'] = $step;
         return $this;
     }
 
+    /**
+     * @param $size
+     * @return $this
+     */
     public function setSize($size)
     {
         $this->attributes['size'] = $size;
         return $this;
     }
 
+    /**
+     * @param $src
+     * @return $this
+     */
     public function setSrc($src)
     {
         $this->attributes['src'] = $src;
@@ -976,9 +1273,9 @@ abstract class FieldBase
     }
 
     /**
-     * El patron siempre tiene que estar indicado entre delimitadores
-     * ej: /[A-Z]/ en éste caso, los delimitadores son las barras (/)
-     * ver https://www.php.net/manual/es/regexp.reference.delimiters.php
+     * The pattern must always be indicated between delimiters
+     * ej: /[A-Z]/ in this case, the delimiters are the bars (/)
+     * https://www.php.net/manual/es/regexp.reference.delimiters.php
      * @param string type $pattern
      * @return $this
      */
@@ -988,33 +1285,47 @@ abstract class FieldBase
         return $this;
     }
 
+    /**
+     * @param $accept
+     * @return $this
+     */
     public function setAccept($accept)
     {
         $this->attributes['accept'] = $accept;
         return $this;
     }
-    
+
+    /**
+     * @param $wrap
+     * @return $this
+     */
     public function setWrap($wrap)
     {
         $this->attributes['wrap'] = $wrap;
         return $this;
     }
-    
+
+    /**
+     * @param array $constraint
+     */
     public function setConstraint(array $constraint)
     {
         $this->constraint = $constraint;
     }
     
     /**
-     * 
-     * @return FormUI|null
+     * @return FormInterface|null
      */
     public function getForm()
     {
         return $this->form;
     }
-    
-    public function setForm(FormUI $form)
+
+    /**
+     * @param FormInterface $form
+     * @return $this
+     */
+    public function setForm(FormInterface $form)
     {
         if(!is_null($form)){
             $this->form = $form;
@@ -1022,7 +1333,7 @@ abstract class FieldBase
         
         return $this;
     }
-    
+
     protected function typeValidate()
     {
         switch ($this->getType()){
@@ -1052,7 +1363,10 @@ abstract class FieldBase
                 break;
         }
     }
-    
+
+    /**
+     * @throws \Exception
+     */
     protected function attributeValidate()
     {
         $Attributes = $this->getAttributes();
@@ -1103,7 +1417,11 @@ abstract class FieldBase
             }
         }
     }
-    
+
+    /**
+     * @return bool
+     * @throws \Exception
+     */
     public function validate()
     {
         $this->typeValidate();

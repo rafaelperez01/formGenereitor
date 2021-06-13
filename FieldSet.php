@@ -1,28 +1,21 @@
 <?php
 
-/*
- * Copyright 2020 Rafael Pérez.
- *
- * Software protegido por la propiedad intelectual.
- * Queda prohibido copiar, modificar, fusionar, publicar, distribuir, sublicenciar y / o vender
- * copias no autorizadas del software
- *
- * El aviso de copyright anterior y este aviso de permiso se incluirán en todas las copias o 
- * porciones sustanciales del software.
- */
-
-
 namespace formGenereitor;
 
+use formGenereitor\interfaces\FieldSetInterface;
+
 require_once 'base/FieldSetBase.php';
-require_once 'ui/FieldSetUI.php';
+require_once 'interfaces/FieldSetInterface.php';
 
 /**
- * Description of FieldSet
- *
- * @author Rafael Pérez.
+ * @author Rafael Perez <rafaelperez7461@gmail.com>
+ * Displays <a href="https://opensource.org/licenses/MIT">The MIT License</a>
+ * @license https://opensource.org/licenses/MIT The MIT License
+ * @package formGenereitor1.0.0
  */
-class FieldSet extends base\FieldSetBase implements ui\FieldSetUI 
+class FieldSet extends base\FieldSetBase implements FieldSetInterface
 {
-    //put your code here
+    /**
+     * Put your code here
+     */
 }

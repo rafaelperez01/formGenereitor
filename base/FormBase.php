@@ -1,28 +1,16 @@
 <?php
 
-/*
- * Copyright 2020 Rafael Pérez.
- *
- * Software protegido por la propiedad intelectual.
- * Queda prohibido copiar, modificar, fusionar, publicar, distribuir, sublicenciar y / o vender
- * copias no autorizadas del software
- *
- * El aviso de copyright anterior y este aviso de permiso se incluirán en todas las copias o 
- * porciones sustanciales del software.
- */
-
 namespace formGenereitor\base;
 
 use formGenereitor\Field;
 use formGenereitor\FieldSet;
-use formGenereitor\ui\FieldSetUI;
-use formGenereitor\ui\FieldUI;
+use formGenereitor\interfaces\{FieldInterface, FieldSetInterface};
 
 /**
- * Description of FormBase
- * poner la opcion del bootstrap y show label
- *
- * @author Rafael Pérez.
+ * @author Rafael Perez <rafaelperez7461@gmail.com>
+ * Displays <a href="https://opensource.org/licenses/MIT">The MIT License</a>
+ * @license https://opensource.org/licenses/MIT The MIT License
+ * @package formGenereitor1.0.0
  */
 abstract class FormBase 
 {
@@ -57,6 +45,7 @@ abstract class FormBase
 
     /**
      * @param string $language
+     * @return $this
      */
     public function setLanguage(string $language)
     {
@@ -64,6 +53,12 @@ abstract class FormBase
         return $this;
     }
 
+    /**
+     * Form constructor.
+     * @param array $fiels
+     * @param string $action
+     * @param string $method
+     */
     public function __construct($fiels = [], $action = "", $method = 'post')
     {
         $this->setFields($fiels);
@@ -74,6 +69,10 @@ abstract class FormBase
         $this->setName($formId);
     }
 
+    /**
+     * @param $readOnly
+     * @return $this
+     */
     public function setReadOnly($readOnly)
     {
         $this->readOnly = true === $readOnly;
@@ -81,7 +80,7 @@ abstract class FormBase
     }
     
     /**
-     * Configura una lista de campos como campos de sólo lectura
+     * Set a list of fields as read-only fields
      * @param array $fieldIdList
      * @return $this
      */
@@ -99,7 +98,7 @@ abstract class FormBase
     }
     
     /**
-     * Configura una lista de campos como campos desabilitados
+     * Set a list of fields as disabled fields
      * @param array $fieldIdList
      * @return $this
      */
@@ -117,7 +116,7 @@ abstract class FormBase
     }
     
     /**
-     * Configura una lista de campos como campos ocultos
+     * Set a list of fields as hidden fields
      * @param array $fieldIdList
      * @return $this
      */
@@ -135,7 +134,7 @@ abstract class FormBase
     }
     
     /**
-     * Configura una lista de campos como campos de tipo textArea
+     * Configure a list of fields as fields of type textArea
      * @param array $fieldIdList
      * @return $this
      */
@@ -153,7 +152,7 @@ abstract class FormBase
     }
     
     /**
-     * Configura las opciones para un campo (select, list, optgroup) 
+     * Set options for a field (select, list, optgroup)
      * @param string $fieldId
      * @param array $options
      * @return $this
@@ -168,7 +167,7 @@ abstract class FormBase
     }
 
     /**
-     * Indica si se debe mostrar los estilos bootstrap
+     * Indicates if bootstrap styles should be displayed
      * @param boolean $show
      * @return $this
      */
@@ -177,19 +176,21 @@ abstract class FormBase
         $this->showBootstrap = true === $show;
         return $this;
     }
-    
+
+    /**
+     * @return bool
+     */
     public function getShowBootstrap()
     {
         return $this->showBootstrap;
     }
 
-
     /**
-     * Añade o sustituye un campo en la lista de campos
-     * @param FieldUI $field
+     * Add or replace field
+     * @param FieldInterface $field
      * @return $this
      */
-    public function addField(FieldUI $field)
+    public function addField(FieldInterface $field)
     {
         $field->setForm($this);
         $this->attributes['fields'][$field->getId()] = $field;
@@ -197,8 +198,8 @@ abstract class FormBase
     }
     
     /**
-     * Añade una lista de campos (los items tienen que ser objetos de tipo FieldUI)
-     * @param array <FieldUI> $fieldList
+     * Add a list of fields (the items have to be objects of type FieldInterface)
+     * @param array <FieldInterface> $fieldList
      * @return $this
      */
     public function addFieldList(array $fieldList)
@@ -213,9 +214,8 @@ abstract class FormBase
     }
     
     /**
-     * Puede recivir un array con el par clave-valor para crear y añadir campos
-     * a partir de este, o puede recivir un array de objetos de tipo FieldUI y
-     * los añade a la lista de campos
+     * You can receive an array with the key-value pair to create and add fields from it,
+     * or you can receive an array of objects of type FieldInterface and add them to the list of fields
      * @param array $fields
      * @return $this
      */
@@ -223,7 +223,7 @@ abstract class FormBase
     {
 
         foreach ($fields as $name => $value){
-            if($value instanceof FieldUI){
+            if($value instanceof FieldInterface){
                 $f = $value;
             } else {
                 $f = new Field($name, $value);
@@ -237,9 +237,8 @@ abstract class FormBase
     }
 
     /**
-     * Obtiene un campo por su id
-     * @param string $id
-     * @return FieldUI
+     * @param $id
+     * @return mixed|null
      */
     public function getFieldById($id)
     {
@@ -252,11 +251,11 @@ abstract class FormBase
     }
     
     /**
-     * Añade o sustituye un fieldset en la lista de fieldsets
-     * @param FieldSetUI $fieldset
+     * Add or replace a fieldset in the list of fieldsets
+     * @param FieldSetInterface $fieldset
      * @return $this
      */
-    public function addFieldset(FieldSetUI $fieldset)
+    public function addFieldset(FieldSetInterface $fieldset)
     {
         $fieldset->setForm($this);
         $this->attributes['fieldsets'][$fieldset->getId()] = $fieldset;
@@ -264,8 +263,8 @@ abstract class FormBase
     }
     
     /**
-     * Añade una lista de fieldset (los items tienen que ser de tipo FieldSetUI)
-     * @param array <FieldSetUI> $fieldsetList
+     * Add a list of fieldset (items have to be of type FieldSetInterface)
+     * @param array <FieldSetInterface> $fieldsetList
      * @return $this
      */
     public function addFieldsetList(array $fieldsetList)
@@ -280,16 +279,15 @@ abstract class FormBase
     }
     
     /**
-     * Puede recivir un array con el par clave-valor para crear y añadir fieldset
-     * a partir de este, o puede recivir un array de objetos de tipo FieldSetUI y
-     * los añade a la lista de fieldset
+     * You can receive an array with the key-value pair to create and add fieldset from it,
+     * or you can receive an array of objects of type FieldSetInterface and add them to the fieldset list
      * @param array $fieldsets
      * @return $this
      */
     public function setFieldsets(array $fieldsets)
     {
         foreach ($fieldsets as $key => $fieldSet){
-            if($fieldSet instanceof FieldSetUI){
+            if($fieldSet instanceof FieldSetInterface){
                 $f = $fieldSet;
             } else {
                 $f = new FieldSet($fieldSet);
@@ -303,9 +301,8 @@ abstract class FormBase
     }
 
     /**
-     * Obtiene un fieldset por su id
-     * @param string | int $id
-     * @return null | FieldSetUI
+     * @param $id
+     * @return mixed|null
      */
     public function getFieldsetById($id)
     {
@@ -318,7 +315,7 @@ abstract class FormBase
     }
 
     /**
-     * Renderiza el formulario completo (fieldsets y campos)
+     * Render the entire form (fieldsets and fields)
      * @return string
      */
     public function render()
@@ -332,7 +329,6 @@ abstract class FormBase
     }
 
     /**
-     * 
      * @return string
      */
     protected function renderAttributes()
@@ -348,7 +344,6 @@ abstract class FormBase
     }
 
     /**
-     * 
      * @return string
      */
     protected function renderFieldSets()
@@ -367,7 +362,6 @@ abstract class FormBase
     }
 
     /**
-     * 
      * @return string
      */
     protected function renderFields()
@@ -389,13 +383,16 @@ abstract class FormBase
         return $ret;
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return $this->render();
     }
 
     /**
-     * Retorna el formulario convertido a json
+     * Returns the form converted to json
      * @return string JSON
      */
     public function toJson()
@@ -427,15 +424,14 @@ abstract class FormBase
     }
 
     /**
-     * Retorna el formulario convertido en array
+     * Returns the form converted into an array
      * @return array
      */
     public function toArray(): array {
         return json_decode($this->toJson(), true);
     }
-    
+
     /**
-     * 
      * @return string
      */
     public function start()
@@ -451,9 +447,8 @@ abstract class FormBase
         
         return $ret;
     }
-    
+
     /**
-     * 
      * @return string
      */
     public function end()
@@ -477,131 +472,214 @@ abstract class FormBase
         return $field;
     }
 
+    /**
+     * @return mixed
+     */
     public function getId()
     {
         return @$this->attributes['id'];
     }
 
+    /**
+     * @return mixed
+     */
     public function getClass()
     {
         return @$this->attributes['class'];
     }
 
+    /**
+     * @return mixed
+     */
     public function getAction()
     {
         return @$this->attributes['action'];
     }
 
+    /**
+     * @return mixed
+     */
     public function getMethod()
     {
         return @$this->attributes['method'];
     }
 
+    /**
+     * @return mixed
+     */
     public function getName()
     {
         return @$this->attributes['name'];
     }
 
+    /**
+     * @return mixed
+     */
     public function getCaption()
     {
         return @$this->attributes['caption'];
     }
 
+    /**
+     * @return mixed
+     */
     public function getFieldsets()
     {
         return $this->attributes['fieldsets'];
     }
 
+    /**
+     * @return mixed
+     */
     public function getFields()
     {
         return $this->attributes['fields'];
     }
 
+    /**
+     * @return mixed
+     */
     public function getAutocomplete()
     {
         return @$this->attributes['autocomplete'];
     }
 
+    /**
+     * @return mixed
+     */
     public function getNovalidate()
     {
         return @$this->attributes['novalidate'];
     }
 
+    /**
+     * @return mixed
+     */
     public function getEnctype()
     {
         return @$this->attributes['enctype'];
     }
 
+    /**
+     * @return mixed
+     */
     public function getTarget()
     {
         return @$this->attributes['target'];
     }
 
+    /**
+     * @return mixed
+     */
     public function getAccept()
     {
         return @$this->attributes['accept'];
     }
 
+    /**
+     * @param $id
+     * @return $this
+     */
     public function setId($id)
     {
         $this->attributes['id'] = $id;
         return $this;
     }
 
+    /**
+     * @param $class
+     * @return $this
+     */
     public function setClass($class)
     {
         $this->attributes['class'] = $class;
         return $this;
     }
 
+    /**
+     * @param $action
+     * @return $this
+     */
     public function setAction($action)
     {
         $this->attributes['action'] = $action;
         return $this;
     }
 
+    /**
+     * @param $name
+     * @return $this
+     */
     public function setName($name)
     {
         $this->attributes['name'] = $name;
         return $this;
     }
 
+    /**
+     * @param $caption
+     * @return $this
+     */
     public function setCaption($caption)
     {
         $this->attributes['caption'] = $caption;
         return $this;
     }
 
+    /**
+     * @param $autocomplete
+     * @return $this
+     */
     public function setAutocomplete($autocomplete)
     {
         $this->attributes['autocomplete'] = $autocomplete;
         return $this;
     }
 
+    /**
+     * @param $novalidate
+     * @return $this
+     */
     public function setNovalidate($novalidate)
     {
         $this->attributes['novalidate'] = $novalidate;
         return $this;
     }
 
+    /**
+     * @param $enctype
+     * @return $this
+     */
     public function setEnctype($enctype)
     {
         $this->attributes['enctype'] = $enctype;
         return $this;
     }
 
+    /**
+     * @param $target
+     * @return $this
+     */
     public function setTarget($target)
     {
         $this->attributes['target'] = $target;
         return $this;
     }
 
+    /**
+     * @param $accept
+     * @return $this
+     */
     public function setAccept($accept)
     {
         $this->attributes['accept'] = $accept;
         return $this;
     }
 
+    /**
+     * @param $method
+     * @return $this
+     */
     public function setMethod($method)
     {
         $method = strtolower(trim($method));
@@ -611,7 +689,7 @@ abstract class FormBase
     }
     
     /**
-     * Valida si los valores de los campos son correctos (tipo, longitud y formato)
+     * Validate if the values of the fields are correct (type, length and format)
      * @return boolean
      */
     public function validate()
@@ -627,7 +705,7 @@ abstract class FormBase
     }
     
     /**
-     * Rellena los valores de los campos con los datos que llegan desde los metodos post y get
+     * Fill the values of the fields with the data that comes from the post and get methods
      * @return $this
      */
     public function loadDataFromRequest()
@@ -643,7 +721,10 @@ abstract class FormBase
         
         return $this;
     }
-    
+
+    /**
+     * @return $this
+     */
     protected function loadDataFromGet()
     {
         foreach ($this->getFields() as $field){
@@ -654,7 +735,10 @@ abstract class FormBase
         
         return $this;
     }
-    
+
+    /**
+     * @return $this
+     */
     protected function loadDataFromPost()
     {
         foreach ($this->getFields() as $field){

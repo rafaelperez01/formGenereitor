@@ -1,30 +1,19 @@
 <?php
 
-/*
- * Copyright 2020 Rafael Pérez.
- *
- * Software protegido por la propiedad intelectual.
- * Queda prohibido copiar, modificar, fusionar, publicar, distribuir, sublicenciar y / o vender
- * copias no autorizadas del software
- *
- * El aviso de copyright anterior y este aviso de permiso se incluirán en todas las copias o 
- * porciones sustanciales del software.
- */
-
-
 namespace formGenereitor;
 
 require_once 'base/FieldBase.php';
-require_once 'ui/FieldUI.php';
+require_once 'interfaces/FieldInterface.php';
 
 /**
- * Description of Field
- *
- * @author Rafael Pérez.
+ * @author Rafael Perez <rafaelperez7461@gmail.com>
+ * Displays <a href="https://opensource.org/licenses/MIT">The MIT License</a>
+ * @license https://opensource.org/licenses/MIT The MIT License
+ * @package formGenereitor1.0.0
  */
-class Field extends base\FieldBase implements ui\FieldUI
+class Field extends base\FieldBase implements interfaces\FieldInterface
 {
-    /* 
-     * put your code here
+    /**
+     * Put your code here
      */
 }
