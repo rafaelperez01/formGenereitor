@@ -35,24 +35,47 @@
 
                             use formGenereitor\{Field, Fieldset, Form};
 
+                            //var_dump($_POST);
+                            
                             $form = new Form();
-                            $form->showBootstrap();
-                            echo $form->start();
+                            // crear un campo a pelo para ver el pattern
                             
-                            $nombre = $form->createField('nombre');
-                            $nombre->setLabel('Indique su Nombre')->setRequired()->setMaxlength(5);
-                            echo $nombre;
+                            $nombre = $form->createField('strName')->setLabel('Indique su Nombre')->setMaxlength(5)->setRequired();
                             
-                            $apellidos = $form->createField('apellidos');
-                            $apellidos->setLabel('Indique sus Apellidos')->setRequired();
-                            echo $apellidos;
+                            $form->createField('correo')->setType('email')->setLabel('Correo Electronico')->setPattern("[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$");
+
+                            $form->createField('edad')->setType('number');
                             
+                            $form->createField('sexo', ['' => '-', 'm' => 'mujer','h' => 'hombre']);
+
+                            $form->createField('nacimiento')->setLabel('Fecha de Nacimiento')->setType('date')->setMin('2020')->setMax(2022);
+
+                            $form->createField('disponible')->setLabel('Si quiero')->setValue('si')->setType('radio')->setRequired();
+                            $form->createField('disponible')->setLabel('No quiero')->setValue('no')->setType('radio');
+
+                            $form->createField('pasatiempo1')->setLabel('Leer')->setValue('leer')->setType('checkbox');
+                            $form->createField('pasatiempo2')->setLabel('Cantautor')->setValue('cantar')->setType('checkbox');
+                            $form->createField('pasatiempo[]')->setLabel('Bailar')->setValue('bailar')->setType('checkbox')->setRequired();
+                            $form->createField('pasatiempo[]')->setLabel('Cocinar')->setValue('cocinar')->setType('checkbox');
+
+                            $form->createField('direccion')->setType('textarea');
+
                             $aceptar = $form->createField('aceptar');
                             $aceptar->setType('submit');
-                            echo $aceptar;
                             
+                            if(isset($_POST['aceptar']) and $form->validate()){
+                                var_dump($_POST);
+                                //header('location: probando.php?validado');
+                            }
+                            
+                            if(isset($_GET['validado'])){
+                                echo "<h3>El formulario ha sido validado correctamente</h3>";
+                            }
+                            
+                            echo $form->start();
+                            echo $nombre;
+                            echo $form->getFieldById('field_13');
                             echo $form->end();
-                            //var_dump($form->getFieldByName('apellidos'));
                             ?>
                         
                         

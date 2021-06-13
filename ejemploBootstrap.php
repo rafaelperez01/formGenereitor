@@ -4,7 +4,8 @@ require_once 'Fieldset.php';
 require_once 'Form.php';
 require_once 'Error.php';
 
-use formGenereitor\{Field, Fieldset, Form, Error};
+use formGenereitor\Error;
+use formGenereitor\Form;
 
 $showBootstrap = (bool) isset($_GET['showBootstrap']) ? !$_GET['showBootstrap'] : 0;
 $form = new Form();
@@ -57,7 +58,8 @@ if(isset($_POST['Enviar']) and $form->validate()){
                     <div class="col-md-12">
                         <h1>Form Genereitor 2.0</h1>
                         <a href="ejemploBootstrap.php?showBootstrap=<?= $showBootstrap ?>" class="btn btn-warning" onclick="this.style.pointerEvents = 'none';"><?php echo $showBootstrap ? 'No ' : ''; ?>Mostrar estilo Bootstrap</a>
-                            <?= $form->start(); ?><br>
+                        <hr>
+                            <?= $form->start(); ?>
                             <div class="row">
                                 <div class="col-md-6">
                                     <?= $nombre ?>

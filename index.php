@@ -46,20 +46,38 @@
                         $form = new Form;
                         $fieldList = [];
                         foreach ($fields as $value) {
-                            $field = new Field($value, $value, $value);
-                            if('select' == $value){
-                                $opcion = [' - ', 'rojo' => 'rojo', 'azul', 'amarillo', 'verde', 'naranja', 'morado'];
-                                $field->setOptions($opcion);
+                            $field = new Field($value, '', $value);
+                            $field->setRequired();
+                            
+                            switch ($value){
+                                case 'select':
+                                    $opcion = ['' => ' - ', 'rojo' => 'rojo', 'azul', 'amarillo', 'verde', 'naranja', 'morado'];
+                                    $field->setOptions($opcion);
+                                    break;
+                                case 'button':
+                                    $field->setValue($value);
+                                    break;
+
+                                case 'range':
+                                    $field->setMax(25);
+                                default :
+                                    break;
                             }
                             
                             $fieldList[] = $field;
                         }
                         
-                        $form->addFields($fieldList);
+                        $form->addFieldList($fieldList);
                         
-                        $form->setFieldsAsDisableds(['tel', 'password', 'select',]);
-                        $form->setFieldsAsReadOnly(['textarea', 'search']);
+                        $form->setFieldsAsDisableds(['tel', 'password',]);
+                        $form->setFieldsAsReadOnly(['textarea', 'search',]);
                         $form->setFieldsAsTextArea(['color', 'number']);
+
+                        if(isset($_POST['submit']) and $form->validate()){
+                            var_dump($_POST);
+                            //header('location: probando.php?validado');
+                        }
+
                         echo $form;
                         
                         ?>
