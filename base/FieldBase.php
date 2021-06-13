@@ -79,6 +79,7 @@ abstract class FieldBase
 
     /**
      * @param string $language
+     * @return $this
      */
     public function setLanguage(string $language)
     {
@@ -107,12 +108,12 @@ abstract class FieldBase
         $this->setLabelFor($fieldId);
         $this->showBootstrap($showBootstrap);
     }
-    
+
     /**
      * Obtiene el valor del atributo solicitado (si existe dicho atributo)
-     * 
+     *
      * @param string $attrName
-     * @return string
+     * @return mixed
      */
     public function get(string $attrName)
     {
@@ -125,21 +126,21 @@ abstract class FieldBase
      * @param $value
      * @return $this
      */
-    public function set(string $attrName, $value)
+    public function set(string $attrName, $value): FieldBase
     {
         $attrName = strtolower($attrName);
         $this->attributes[$attrName] = $value;
         
         return $this;
     }
-    
-    
+
+
     /**
-     * Setea el tipo de campo, validando que el tipo sea uno permitido dentro 
+     * Setea el tipo de campo, validando que el tipo sea uno permitido dentro
      * de la lista FIELD_TYPES_LIST
-     * 
+     *
      * @param string $type
-     * 
+     * @return $this
      */
     public function setType(string $type)
     {        
@@ -780,7 +781,6 @@ abstract class FieldBase
     
     protected function setClassBootstrap()
     {
-        $bootstrapClass = "";
         switch ($this->getType()){
             case 'radio':
             case 'checkbox': $bootstrapClass = "";//"form-check-input";
@@ -979,7 +979,7 @@ abstract class FieldBase
      * El patron siempre tiene que estar indicado entre delimitadores
      * ej: /[A-Z]/ en éste caso, los delimitadores son las barras (/)
      * ver https://www.php.net/manual/es/regexp.reference.delimiters.php
-     * @param type $pattern
+     * @param string type $pattern
      * @return $this
      */
     public function setPattern($pattern)
@@ -1112,7 +1112,7 @@ abstract class FieldBase
         if(!empty($this->errors)){
             $ret = false;
             foreach($this->errors as $errorMsj){
-                $this->renderErrors .= "\t<span class='help-block' style='color:#ff0000'>{$errorMsj}</span>" . PHP_EOL;
+                $this->renderErrors .= "\t<span class='help-block' style='color:red'>{$errorMsj}</span>" . PHP_EOL;
             }
         }
         

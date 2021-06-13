@@ -32,6 +32,7 @@ interface FormUI
 
     public function getAction();
 
+    public function getShowBootstrap();
     public function getMethod();
 
     public function getName();
