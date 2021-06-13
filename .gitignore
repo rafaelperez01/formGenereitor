@@ -10,3 +10,9 @@ nbproject/*
 /vendor/
 .idea/formGenereitor1.0.0.iml
 .idea/.name
+/includes/
+manual.php
+index.php
+probando.php
+ejemploBootstrap.php
+notas.txt
