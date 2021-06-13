@@ -1,0 +1,14 @@
+{
+    "name": "rafaelperez01/form-genereitor1.0.0",
+    "description": "Se trata de una librer\u0000a que te ayudar\u0000 a crear un formulario de manera r\u0000pida y sencilla.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "rafaelperez01",
+            "email": "angel_rafael01@hotmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {}
+}

@@ -6,3 +6,5 @@ nbproject/*
 .idea/formGenereitor2.0.iml
 .idea/codeStyles/codeStyleConfig.xml
 .idea/.gitignore
+
+/vendor/
